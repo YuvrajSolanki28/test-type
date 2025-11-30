@@ -1,0 +1,47 @@
+const express = require("express");
+const http = require("http");
+const socketIo = require("socket.io");
+const cors = require("cors");
+const dotenv = require("dotenv");
+
+// Local modules
+const connectDB = require("./config/db");
+const authRoutes = require("./routes/auth");
+const RaceManager = require("./raceManager");
+const setupSocketHandlers = require("./socketHandlers");
+
+// Load environment variables
+dotenv.config();
+
+// Initialize Express
+const app = express();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Connect to MongoDB
+connectDB();
+
+// API routes
+app.use("/api/auth", authRoutes);
+
+// HTTP + Socket.io setup
+const server = http.createServer(app);
+
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"]
+  }
+});
+
+//Race system
+const raceManager = new RaceManager();
+setupSocketHandlers(io, raceManager);
+
+// Start server
+const PORT = process.env.PORT || 3001;
+server.listen(PORT, () => {
+  console.log(`Race server running on port ${PORT}`);
+});
