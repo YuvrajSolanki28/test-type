@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Zap, Target, Trophy, TrendingUp, LogIn } from 'lucide-react'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 export function Home() {
   const { isAuthenticated } = useAuth()
   const features = [
@@ -27,7 +27,7 @@ export function Home() {
     },
   ]
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-7xl mx-auto px-6 py-24">
         {/* Auth Buttons */}
         {!isAuthenticated && (
@@ -64,12 +64,12 @@ export function Home() {
           className="text-center mb-24"
         >
           <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
               <span className="text-white font-bold text-2xl">T</span>
             </div>
           </div>
 
-          <h1 className="text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-7xl font-bold mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             TypeSpeed
           </h1>
 
@@ -87,7 +87,7 @@ export function Home() {
                 whileTap={{
                   scale: 0.95,
                 }}
-                className="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium text-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
+                className="px-8 py-4 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium text-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
               >
                 Start Typing Test
               </motion.button>
@@ -127,7 +127,7 @@ export function Home() {
               }}
               className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mb-4">
+              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mb-4">
                 <feature.icon className="w-6 h-6 text-blue-400" />
               </div>
               <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>

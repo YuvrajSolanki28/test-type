@@ -1,8 +1,20 @@
 import { useState } from 'react';
 import { Users, Play, Crown } from 'lucide-react';
+import { Loading } from './Loading';
 
+interface Player {
+  id: string;
+  name: string;
+  finished?: boolean;
+}
+
+interface Race {
+  players: Player[];
+  status: 'waiting' | 'countdown' | 'racing' | 'finished';
+  countdown?: number;
+}
 interface RaceLobbyProps {
-  race: any;
+  race: Race | null;
   onJoinRace: (name: string) => void;
   onLeaveRace: () => void;
   connected: boolean;
@@ -13,10 +25,7 @@ export function RaceLobby({ race, onJoinRace, onLeaveRace, connected }: RaceLobb
 
   if (!connected) {
     return (
-      <div className="text-center py-12">
-        <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-gray-400">Connecting to race server...</p>
-      </div>
+      <Loading variant="fullscreen" text="Connecting to race server..." />
     );
   }
 
@@ -68,7 +77,7 @@ export function RaceLobby({ race, onJoinRace, onLeaveRace, connected }: RaceLobb
           Players ({race.players.length})
         </h3>
         <div className="grid gap-2">
-          {race.players.map((player: any, index: number) => (
+          {race.players.map((player: Player, index: number) => (
             <div key={player.id} className="flex items-center gap-3 p-3 bg-gray-700/50 rounded-lg">
               {index === 0 && <Crown className="w-4 h-4 text-yellow-500" />}
               <span className="font-medium">{player.name}</span>

@@ -10,6 +10,7 @@ import { History } from './pages/History'
 import { Leaderboard } from './pages/Leaderboard'
 import { Settings } from './pages/Settings'
 import { Profile } from './pages/Profile'
+import { Achievements } from './pages/Achievements'
 
 export function App() {
   return (
@@ -26,6 +27,7 @@ export function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/achievements" element={<Achievements />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -1,10 +1,28 @@
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Trash2,  Award } from 'lucide-react'
-import { clearAllData, getAchievements } from '../utils/statsManager'
+import { Trash2, Award } from 'lucide-react'
+import { clearAllData, getAchievements, type Achievement } from '../utils/statsManager'
+import { Loading } from '../components/Loading'
+
 export function Settings() {
-  const [achievements] = useState(getAchievements())
+  const [achievements, setAchievements] = useState<Achievement[]>([])
   const [showConfirm, setShowConfirm] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadAchievements() {
+      try {
+        const data = await getAchievements()
+        setAchievements(data || [])
+      } catch (error) {
+        console.error('Failed to load achievements:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadAchievements()
+  }, [])
+
   const handleClearData = () => {
     if (showConfirm) {
       clearAllData()
@@ -14,21 +32,21 @@ export function Settings() {
       setTimeout(() => setShowConfirm(false), 3000)
     }
   }
+
   const unlockedCount = achievements.filter((a) => a.unlocked).length
+
+  if (loading) {
+    return (
+      
+      <Loading variant="fullscreen" text="Loading settings..." />
+    )
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-4xl mx-auto px-6 py-24">
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-        >
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Settings
           </h1>
           <p className="text-white/60 mb-12">
@@ -38,17 +56,9 @@ export function Settings() {
 
         {/* Achievements */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.1,
-          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
           className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
@@ -63,18 +73,14 @@ export function Settings() {
             {achievements.map((achievement, index) => (
               <motion.div
                 key={achievement.id}
-                initial={{
-                  opacity: 0,
-                  scale: 0.9,
-                }}
-                animate={{
-                  opacity: 1,
-                  scale: 1,
-                }}
-                transition={{
-                  delay: 0.1 + index * 0.05,
-                }}
-                className={`backdrop-blur-xl border rounded-xl p-4 ${achievement.unlocked ? 'bg-white/10 border-white/20' : 'bg-white/5 border-white/10 opacity-50'}`}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 + index * 0.05 }}
+                className={`backdrop-blur-xl border rounded-xl p-4 ${
+                  achievement.unlocked 
+                    ? 'bg-white/10 border-white/20' 
+                    : 'bg-white/5 border-white/10 opacity-50'
+                }`}
               >
                 <div className="flex items-start gap-3">
                   <div className="text-3xl">{achievement.icon}</div>
@@ -98,17 +104,9 @@ export function Settings() {
 
         {/* Data Management */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={{
-            opacity: 1,
-            y: 0,
-          }}
-          transition={{
-            delay: 0.2,
-          }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
           className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8"
         >
           <h2 className="text-2xl font-bold mb-6">Data Management</h2>
@@ -116,7 +114,11 @@ export function Settings() {
           <div className="space-y-4">
             <button
               onClick={handleClearData}
-              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${showConfirm ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
+              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${
+                showConfirm 
+                  ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30' 
+                  : 'bg-white/5 border-white/10 hover:bg-white/10'
+              }`}
             >
               <div className="flex items-center gap-3">
                 <Trash2 className="w-5 h-5 text-red-400" />
@@ -134,7 +136,6 @@ export function Settings() {
         </motion.div>
       </div>
 
-      {/* Ambient glow effects */}
       <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
     </div>

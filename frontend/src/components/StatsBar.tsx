@@ -47,7 +47,7 @@ export function StatsBar({
     }} transition={{
       delay: index * 0.1
     }} className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden">
-          <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 transition-opacity duration-300`} />
+          <div className={`absolute inset-0 bg-linear-to-br ${stat.color} opacity-0 transition-opacity duration-300`} />
           <div className="relative">
             <div className="text-sm text-white/50 mb-2">{stat.label}</div>
             <motion.div key={stat.value} initial={{

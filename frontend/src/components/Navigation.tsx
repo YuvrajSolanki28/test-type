@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Trophy, BarChart3, BookOpen, Settings, User, ChevronRight, Users } from 'lucide-react'
+import { Home, Trophy, BarChart3, BookOpen, Settings, User, ChevronRight, Users, Award } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAuth } from '../contexts/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 export function Navigation() {
   const location = useLocation()
@@ -21,6 +21,7 @@ export function Navigation() {
     { path: '/race', icon: Users, label: 'Race' },
     { path: '/history', icon: BarChart3, label: 'History' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
+    { path: '/achievements', icon: Award, label: 'Achievements' }, 
     { path: '/settings', icon: Settings, label: 'Settings' },
   ]
 
@@ -71,7 +72,7 @@ export function Navigation() {
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    className={`p-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                    className={`p-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
                   >
                     <Icon className="w-5 h-5" />
                   </motion.div>

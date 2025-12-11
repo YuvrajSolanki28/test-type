@@ -12,8 +12,9 @@ interface TypingAreaProps {
   timeRemaining: number | null;
   onKeyPress: (key: string) => void;
   onReset: () => void;
-  inputRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLDivElement | null>;
 }
+
 export function TypingArea({
   text,
   userInput,
@@ -59,7 +60,7 @@ export function TypingArea({
       opacity: 1,
       scale: 1
     }} className="w-full max-w-4xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-12 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5" />
+        <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-purple-500/5" />
 
         <div className="relative">
           {/* Progress Bar */}

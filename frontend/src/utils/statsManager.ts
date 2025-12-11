@@ -8,6 +8,7 @@ export interface TestResult {
   difficulty: 'easy' | 'medium' | 'hard';
   timeLimit: number | null;
 }
+
 export interface Achievement {
   id: string;
   title: string;
@@ -16,33 +17,75 @@ export interface Achievement {
   unlocked: boolean;
   unlockedAt?: number;
 }
+
 const STATS_KEY = 'typespeed_stats';
 const ACHIEVEMENTS_KEY = 'typespeed_achievements';
-export function saveTestResult(result: Omit<TestResult, 'id' | 'timestamp'>): TestResult {
+
+function getToken(): string | null {
+  return localStorage.getItem('token');
+}
+
+function isLoggedIn(): boolean {
+  return !!getToken();
+}
+
+export async function saveTestResult(result: Omit<TestResult, 'id' | 'timestamp'>): Promise<TestResult> {
   const newResult: TestResult = {
     ...result,
     id: crypto.randomUUID(),
     timestamp: Date.now()
   };
-  const stats = getTestHistory();
-  stats.push(newResult);
 
-  // Keep last 100 results
-  const trimmed = stats.slice(-100);
-  localStorage.setItem(STATS_KEY, JSON.stringify(trimmed));
-  checkAchievements(newResult, trimmed);
+  if (isLoggedIn()) {
+    try {
+      await fetch('http://localhost:3001/api/auth/test-result', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(result)
+      });
+    } catch (error) {
+      console.error('Failed to save to server:', error);
+    }
+  } else {
+    const stats = await getTestHistory();
+    stats.push(newResult);
+    const trimmed = stats.slice(-100);
+    localStorage.setItem(STATS_KEY, JSON.stringify(trimmed));
+  }
+
+  await checkAchievements(newResult);
   return newResult;
 }
-export function getTestHistory(): TestResult[] {
-  try {
-    const stored = localStorage.getItem(STATS_KEY);
-    return stored ? JSON.parse(stored) : [];
-  } catch {
+
+export async function getTestHistory(): Promise<TestResult[]> {
+  if (isLoggedIn()) {
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/', {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data.testResults || [];
+      }
+    } catch (error) {
+      console.error('Failed to fetch from server:', error);
+    }
     return [];
+  } else {
+    try {
+      const stored = localStorage.getItem(STATS_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
   }
 }
-export function getStats() {
-  const history = getTestHistory();
+
+export async function getStats() {
+  const history = await getTestHistory();
   if (history.length === 0) {
     return {
       totalTests: 0,
@@ -52,11 +95,13 @@ export function getStats() {
       totalTime: 0
     };
   }
+
   const totalTests = history.length;
   const averageWpm = Math.round(history.reduce((sum, r) => sum + r.wpm, 0) / totalTests);
   const averageAccuracy = Math.round(history.reduce((sum, r) => sum + r.accuracy, 0) / totalTests);
   const bestWpm = Math.max(...history.map(r => r.wpm));
   const totalTime = history.reduce((sum, r) => sum + r.time, 0);
+
   return {
     totalTests,
     averageWpm,
@@ -65,14 +110,31 @@ export function getStats() {
     totalTime
   };
 }
-export function getAchievements(): Achievement[] {
-  try {
-    const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
-    return stored ? JSON.parse(stored) : getDefaultAchievements();
-  } catch {
+
+export async function getAchievements(): Promise<Achievement[]> {
+  if (isLoggedIn()) {
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/', {
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        return data.achievements || getDefaultAchievements();
+      }
+    } catch (error) {
+      console.error('Failed to fetch achievements:', error);
+    }
     return getDefaultAchievements();
+  } else {
+    try {
+      const stored = localStorage.getItem(ACHIEVEMENTS_KEY);
+      return stored ? JSON.parse(stored) : getDefaultAchievements();
+    } catch {
+      return getDefaultAchievements();
+    }
   }
 }
+
 function getDefaultAchievements(): Achievement[] {
   return [{
     id: 'first_test',
@@ -112,12 +174,16 @@ function getDefaultAchievements(): Achievement[] {
     unlocked: false
   }];
 }
-function checkAchievements(result: TestResult, history: TestResult[]) {
-  const achievements = getAchievements();
+
+async function checkAchievements(result: TestResult) {
+  const achievements = await getAchievements();
+  const history = await getTestHistory();
   let updated = false;
+
   achievements.forEach(achievement => {
     if (achievement.unlocked) return;
     let shouldUnlock = false;
+
     switch (achievement.id) {
       case 'first_test':
         shouldUnlock = history.length >= 1;
@@ -138,18 +204,46 @@ function checkAchievements(result: TestResult, history: TestResult[]) {
         shouldUnlock = result.difficulty === 'hard';
         break;
     }
+
     if (shouldUnlock) {
       achievement.unlocked = true;
       achievement.unlockedAt = Date.now();
       updated = true;
     }
   });
+
   if (updated) {
-    localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+    if (isLoggedIn()) {
+      try {
+        await fetch('http://localhost:3001/api/auth/achievements', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({ achievements })
+        });
+      } catch (error) {
+        console.error('Failed to save achievements:', error);
+      }
+    } else {
+      localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(achievements));
+    }
   }
 }
-export function clearAllData() {
+
+export async function clearAllData() {
+  if (isLoggedIn()) {
+    try {
+      await fetch('http://localhost:3001/api/auth/clear-data', {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${getToken()}` }
+      });
+    } catch (error) {
+      console.error('Failed to clear server data:', error);
+    }
+  }
+  
   localStorage.removeItem(STATS_KEY);
   localStorage.removeItem(ACHIEVEMENTS_KEY);
-  localStorage.removeItem('typespeed_personal_bests');
 }

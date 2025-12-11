@@ -3,6 +3,7 @@ import { StatsBar } from "./StatsBar";
 import { TypingArea } from "./TypingArea";
 import { ResultsModal } from "./ResultsModal";
 import { useTypingTest } from "../hooks/useTypingTest";
+import { Loading } from './Loading';
 
 export function TypingTest() {
   const {
@@ -30,7 +31,7 @@ export function TypingTest() {
   const personalBest = personalBests[difficulty] ?? null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <Header
         difficulty={difficulty}
         timeLimit={timeLimit}

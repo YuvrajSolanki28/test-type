@@ -32,7 +32,7 @@ export function ModeSelector({
       <div className="flex items-center gap-2">
         <span className="text-sm text-white/50 mr-2">Difficulty:</span>
         <div className="flex gap-1 backdrop-blur-xl bg-white/5 border border-white/10 rounded-lg p-1">
-          {difficulties.map(diff => <button key={diff} onClick={() => !disabled && onDifficultyChange(diff)} disabled={disabled} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${difficulty === diff ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-white/60 hover:text-white/90 hover:bg-white/5'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+          {difficulties.map(diff => <button key={diff} onClick={() => !disabled && onDifficultyChange(diff)} disabled={disabled} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${difficulty === diff ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg' : 'text-white/60 hover:text-white/90 hover:bg-white/5'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
               {diff.charAt(0).toUpperCase() + diff.slice(1)}
             </button>)}
         </div>
@@ -42,10 +42,10 @@ export function ModeSelector({
       <div className="flex items-center gap-2">
         <span className="text-sm text-white/50 mr-2">Time:</span>
         <div className="flex gap-1 backdrop-blur-xl bg-white/5 border border-white/10 rounded-lg p-1">
-          {timeLimits.map(time => <button key={time.label} onClick={() => !disabled && onTimeLimitChange(time.value)} disabled={disabled} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${timeLimit === time.value ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg' : 'text-white/60 hover:text-white/90 hover:bg-white/5'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
+          {timeLimits.map(time => <button key={time.label} onClick={() => !disabled && onTimeLimitChange(time.value)} disabled={disabled} className={`px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200 ${timeLimit === time.value ? 'bg-linear-to-r from-cyan-500 to-blue-600 text-white shadow-lg' : 'text-white/60 hover:text-white/90 hover:bg-white/5'} ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}>
               {time.label}
             </button>)}
         </div>
-      </div>
+        </div>
     </div>;
 }

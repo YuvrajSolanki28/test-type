@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 interface ProgressBarProps {
   progress: number;
@@ -18,7 +17,7 @@ export function ProgressBar({
           </span>}
       </div>
       <div className="h-2 backdrop-blur-xl bg-white/5 border border-white/10 rounded-full overflow-hidden">
-        <motion.div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-lg shadow-blue-500/50" initial={{
+        <motion.div className="h-full bg-linear-to-r from-blue-500 to-purple-600 rounded-full shadow-lg shadow-blue-500/50" initial={{
         width: 0
       }} animate={{
         width: `${progress}%`
