@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { UserPlus, Users, Send, Check, X } from 'lucide-react';
+import axios from 'axios';
 
 interface Friend {
     _id: string;
@@ -20,27 +21,24 @@ export function Friends() {
 
     useEffect(() => {
         loadData();
-
         const interval = setInterval(loadData, 5000);
-
         return () => clearInterval(interval);
     }, []);
-
 
     const loadData = async () => {
         try {
             const token = localStorage.getItem('token');
             const [friendsRes, requestsRes] = await Promise.all([
-                fetch('http://localhost:3001/api/friends', {
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/friends`, {
                     headers: { Authorization: `Bearer ${token}` }
                 }),
-                fetch('http://localhost:3001/api/friends/requests', {
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/friends/requests`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
             ]);
 
-            if (friendsRes.ok) setFriends(await friendsRes.json());
-            if (requestsRes.ok) setRequests(await requestsRes.json());
+            setFriends(friendsRes.data);
+            setRequests(requestsRes.data);
         } catch (error) {
             console.error('Failed to load data:', error);
         } finally {
@@ -53,38 +51,29 @@ export function Friends() {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3001/api/friends/request', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ username })
-            });
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/friends/request`, 
+                { username },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-            if (res.ok) {
-                setUsername('');
-                alert('Friend request sent!');
+            setUsername('');
+            alert('Friend request sent!');
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                alert(error.response?.data?.message || 'Failed to send request');
             } else {
-                const error = await res.json();
-                alert(error.message);
+                alert('Failed to send request');
             }
-        } catch {
-            alert('Failed to send request');
         }
     };
 
     const handleRequest = async (id: string, status: string) => {
         try {
             const token = localStorage.getItem('token');
-            await fetch(`http://localhost:3001/api/friends/request/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ status })
-            });
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/friends/request/${id}`,
+                { status },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
             loadData();
         } catch {
@@ -95,24 +84,17 @@ export function Friends() {
     const createRoom = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:3001/api/multiplayer/room', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({ difficulty: 'medium' })
-            });
+            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/multiplayer/room`,
+                { difficulty: 'medium' },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
 
-            if (res.ok) {
-                const { roomId } = await res.json();
-                window.location.href = `/multiplayer/${roomId}`;
-            }
+            const { roomId } = response.data;
+            window.location.href = `/multiplayer/${roomId}`;
         } catch {
             alert('Failed to create room');
         }
     };
-
 
     if (loading) return <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] flex items-center justify-center text-white">Loading...</div>;
 
@@ -165,14 +147,15 @@ export function Friends() {
                         transition={{ delay: 0.2 }}
                         className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
                     >
-                        <h2 className="text-2xl font-bold mb-6">Friend Requests</h2>
-                        <h2 className="text-2xl font-bold">Friend Requests</h2>
-                        <button
-                            onClick={loadData}
-                            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors text-sm"
-                        >
-                            Refresh
-                        </button>
+                        <div className="flex items-center justify-between mb-6">
+                            <h2 className="text-2xl font-bold">Friend Requests</h2>
+                            <button
+                                onClick={loadData}
+                                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors text-sm"
+                            >
+                                Refresh
+                            </button>
+                        </div>
                         <div className="space-y-4">
                             {requests.map((request) => (
                                 <div key={request._id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">

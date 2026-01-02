@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
     "@types/prismjs": "^1.26.5",
+    "axios": "^1.13.2",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.555.0",
     "prismjs": "^1.30.0",
@@ -23,7 +24,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
-    "@types/node": "^24.10.1",
+    "@types/node": "^24.10.4",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@types/socket.io-client": "^1.4.36",

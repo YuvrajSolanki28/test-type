@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { LogIn, Mail, Lock } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import axios from 'axios'
 
 export function SignIn() {
   const [email, setEmail] = useState('')
@@ -14,32 +15,32 @@ export function SignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError("")
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      })
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/auth/login`,
+        {
+          email,
+          password,
+        }
+      )
 
-      if (response.ok) {
-        const { token, user } = await response.json()
-        localStorage.setItem('token', token)
-        setUser(user)
-        navigate('/test')
+      const { token, user } = data
+      localStorage.setItem("token", token)
+      setUser(user)
+      navigate("/test")
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.error || "Login failed")
       } else {
-        const errorData = await response.json()
-        setError(errorData.error || 'Login failed')
+        setError("Network error")
       }
-    } catch {
-      setError('Network error')
+    } finally {
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
- 
 
   return (
     <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white flex items-center justify-center px-6">
@@ -64,13 +65,13 @@ export function SignIn() {
               <label className="block text-sm text-white/70 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="you@example.com" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -79,13 +80,13 @@ export function SignIn() {
               <label className="block text-sm text-white/70 mb-2">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="••••••••" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -96,8 +97,8 @@ export function SignIn() {
               </motion.div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isLoading}
               className="w-full py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 disabled:opacity-50"
             >

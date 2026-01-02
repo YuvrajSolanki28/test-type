@@ -1,4 +1,4 @@
-import type { Difficulty } from '../utils/textLibrary';
+import type { Difficulty } from '../utils/aiTextGenerator';
 interface ModeSelectorProps {
   difficulty: Difficulty;
   timeLimit: number | null;

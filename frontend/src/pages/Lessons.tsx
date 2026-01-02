@@ -14,10 +14,10 @@ export function Lessons() {
     : lessonsWithProgress.filter(lesson => lesson.category === selectedCategory)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Typing Lessons
           </h1>
           <p className="text-lg text-white/60">Master typing with structured learning</p>
@@ -30,7 +30,7 @@ export function Lessons() {
               onClick={() => setSelectedCategory(category.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl transition-all ${
                 selectedCategory === category.id
-                  ? 'bg-gradient-to-r from-blue-500 to-purple-600 text-white'
+                  ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white'
                   : 'bg-white/5 border border-white/10 text-white/60 hover:bg-white/10'
               }`}
             >
@@ -76,7 +76,7 @@ export function Lessons() {
               )}
 
               {lesson.isUnlocked && (
-                <Link to={`/lesson/${lesson.id}`} className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl text-sm font-medium">
+                <Link to={`/lesson/${lesson.id}`} className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl text-sm font-medium">
                   <Play className="w-4 h-4" />
                   {lesson.isCompleted ? 'Replay' : 'Start Lesson'}
                 </Link>

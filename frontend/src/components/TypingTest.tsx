@@ -33,7 +33,7 @@ export function TypingTest() {
   } = useTypingTest();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <Header 
         difficulty={difficulty} 
         timeLimit={timeLimit} 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Home, Trophy, BarChart3, BookOpen, Settings, User, ChevronRight, Users, Award, Menu, X, BookTextIcon } from 'lucide-react'
+import { Home, Trophy, BarChart3, BookOpen, Settings, User, ChevronRight, Users, Menu, X, BookTextIcon } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../hooks/useAuth'
 
@@ -23,7 +23,6 @@ export function Navigation() {
     { path: '/race', icon: Users, label: 'Race' },
     { path: '/history', icon: BarChart3, label: 'History' },
     { path: '/leaderboard', icon: Trophy, label: 'Leaderboard' },
-    { path: '/achievements', icon: Award, label: 'Achievements' }, 
     { path: '/settings', icon: Settings, label: 'Settings' },
   ]
 

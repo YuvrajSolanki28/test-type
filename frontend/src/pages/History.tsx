@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { TrendingUp, Target, Zap, Clock } from "lucide-react";
 import { getTestHistory, getStats, type TestResult } from "../utils/statsManager";
+import { Loading } from "../components/Loading";
 
 export function History() {
   const [history, setHistory] = useState<TestResult[]>([]);
@@ -46,9 +47,7 @@ export function History() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
-        Loading...
-      </div>
+      <Loading variant="fullscreen" text="Loading achievements..."/>
     );
   }
 

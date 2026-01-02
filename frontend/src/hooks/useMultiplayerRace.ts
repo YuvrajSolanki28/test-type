@@ -28,14 +28,17 @@ export function useMultiplayerRace() {
 
   useEffect(() => {
     const newSocket = io('ws://localhost:3001');
-    setSocket(newSocket);
-
-    newSocket.on('connect', () => setConnected(true));
+    newSocket.on('connect', () => {
+      setSocket(newSocket);
+      setConnected(true);
+    });
     newSocket.on('disconnect', () => setConnected(false));
     newSocket.on('raceUpdate', setRace);
     newSocket.on('raceStart', () => setStartTime(Date.now()));
 
-    return () => newSocket.close();
+    return () => {
+      newSocket.disconnect();
+    };
   }, []);
 
   const joinRace = useCallback((playerName: string) => {
@@ -60,13 +63,13 @@ export function useMultiplayerRace() {
         if (key !== race.text[newInput.length - 1]) {
           setErrors(e => e + 1);
         }
-        
+
         const progress = Math.round((newInput.length / race.text.length) * 100);
         const elapsed = startTime ? (Date.now() - startTime) / 1000 : 0;
         const wpm = elapsed > 0 ? Math.round((newInput.length / 5) / (elapsed / 60)) : 0;
-        
+
         socket?.emit('updateProgress', { progress, wpm, finished: newInput.length === race.text.length });
-        
+
         return newInput;
       }
       return prev;

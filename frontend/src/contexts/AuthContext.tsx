@@ -1,5 +1,6 @@
 import { useState, useEffect, type ReactNode } from "react";
-import { AuthContext, type User } from "./authTypes"; 
+import { AuthContext, type User } from "./authTypes";
+import axios from 'axios';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -7,13 +8,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      fetch('http://localhost:3001/api/auth/profile', {
+      axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`, {
         headers: { 'Authorization': `Bearer ${token}` }
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.user) {
-          setUser(data.user);
+      .then(response => {
+        if (response.data.user) {
+          setUser(response.data.user);
         }
       })
       .catch(() => {

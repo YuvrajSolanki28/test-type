@@ -1,28 +1,24 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Trash2, Award, Volume2, VolumeX, Keyboard, Eye, RotateCcw, Target } from 'lucide-react'
-import { clearAllData, getAchievements, type Achievement } from '../utils/statsManager'
+import { Trash2, Volume2, VolumeX, Keyboard, Eye, RotateCcw, Target } from 'lucide-react'
+import { clearAllData } from '../utils/statsManager'
 import { getSettings, updateSetting, resetSettings, type SettingsConfig } from '../utils/settingsManager'
 import { Loading } from '../components/Loading'
 import { soundManager } from '../utils/soundManager'
 
-export function Settings() {
-  const [achievements, setAchievements] = useState<Achievement[]>([])
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [settings, setSettings] = useState<SettingsConfig>(getSettings())
+const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
+  <button
+    onClick={onChange}
+    className={`relative w-12 h-6 rounded-full transition-colors ${enabled ? 'bg-blue-500' : 'bg-white/20'}`}
+  >
+    <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${enabled ? 'translate-x-7' : 'translate-x-1'}`} />
+  </button>
+)
 
-  useEffect(() => {
-    async function loadAchievements() {
-      try {
-        const data = await getAchievements()
-        setAchievements(data || [])
-      } finally {
-        setLoading(false)
-      }
-    }
-    loadAchievements()
-  }, [])
+export function Settings() {
+  const [showConfirm, setShowConfirm] = useState(false)
+  const [loading] = useState(false)
+  const [settings, setSettings] = useState<SettingsConfig>(getSettings())
 
   useEffect(() => {
     soundManager.setEnabled(settings.soundEnabled)
@@ -32,7 +28,6 @@ export function Settings() {
     updateSetting(key, value)
     setSettings(prev => ({ ...prev, [key]: value }))
 
-    // Update sound manager when sound setting changes
     if (key === 'soundEnabled') {
       soundManager.setEnabled(value as boolean)
     }
@@ -48,24 +43,13 @@ export function Settings() {
     }
   }
 
-  const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
-    <button
-      onClick={onChange}
-      className={`relative w-12 h-6 rounded-full transition-colors ${enabled ? 'bg-blue-500' : 'bg-white/20'
-        }`}
-    >
-      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${enabled ? 'translate-x-7' : 'translate-x-1'
-        }`} />
-    </button>
-  )
-
   if (loading) return <Loading variant='fullscreen' />
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-4xl mx-auto px-6 py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Settings
           </h1>
           <p className="text-white/60 mb-12">Customize your typing experience</p>
@@ -97,7 +81,6 @@ export function Settings() {
                 onChange={() => {
                   const newValue = !settings.soundEnabled
                   handleSettingChange('soundEnabled', newValue)
-                  // Test sound when toggling
                   if (newValue) {
                     soundManager.keyPress()
                   }
@@ -151,46 +134,6 @@ export function Settings() {
                 <option value="colemak" className="bg-gray-800 text-white">Colemak</option>
               </select>
             </div>
-
-          </div>
-        </motion.div>
-
-        {/* Achievements */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
-        >
-          <div className="flex items-center gap-3 mb-6">
-            <Award className="w-6 h-6 text-yellow-400" />
-            <h2 className="text-2xl font-bold">Achievements</h2>
-            <span className="ml-auto text-white/60">
-              {achievements.filter(a => a.unlocked).length} / {achievements.length}
-            </span>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {achievements.slice(0, 4).map((achievement, index) => (
-              <motion.div
-                key={achievement.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 + index * 0.05 }}
-                className={`backdrop-blur-xl border rounded-xl p-4 ${achievement.unlocked
-                  ? 'bg-white/10 border-white/20'
-                  : 'bg-white/5 border-white/10 opacity-50'
-                  }`}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="text-2xl">{achievement.icon}</div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold mb-1">{achievement.title}</h3>
-                    <p className="text-sm text-white/60">{achievement.description}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
           </div>
         </motion.div>
 
@@ -198,7 +141,7 @@ export function Settings() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.2 }}
           className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8"
         >
           <h2 className="text-2xl font-bold mb-6">Data Management</h2>
@@ -229,7 +172,7 @@ export function Settings() {
                     {showConfirm ? 'Click again to confirm' : 'Clear All Data'}
                   </div>
                   <div className="text-sm text-white/60">
-                    Delete all test history, stats, and achievements
+                    Delete all test history and stats
                   </div>
                 </div>
               </div>

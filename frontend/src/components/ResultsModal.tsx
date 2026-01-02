@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Trophy, TrendingUp, Target, Zap } from 'lucide-react';
-import type{ Difficulty } from '../utils/textLibrary';
+import type{ Difficulty } from '../utils/aiTextGenerator';
 interface ResultsModalProps {
   wpm: number;
   accuracy: number;

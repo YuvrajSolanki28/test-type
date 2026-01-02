@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { UserPlus, Mail, Lock, User } from 'lucide-react'
+import axios from 'axios'
 
 export function SignUp() {
   const [username, setUsername] = useState('')
@@ -29,25 +30,23 @@ export function SignUp() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password })
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
+        username,
+        email,
+        password
       })
 
-      if (response.ok) {
-        const { token } = await response.json()
-        localStorage.setItem('token', token)
-        navigate('/')
+      const { token } = response.data
+      localStorage.setItem('token', token)
+      navigate('/')
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.error || 'Signup failed')
       } else {
-        const errorData = await response.json()
-        setError(errorData.error || 'Signup failed')
+        setError('Network error')
       }
-    } catch {
-      setError('Network error')
+      setIsLoading(false)
     }
-
-    setIsLoading(false)
   }
 
   return (
@@ -73,13 +72,13 @@ export function SignUp() {
               <label className="block text-sm text-white/70 mb-2">Username</label>
               <div className="relative">
                 <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="speedtyper" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="speedtyper"
                 />
               </div>
             </div>
@@ -88,13 +87,13 @@ export function SignUp() {
               <label className="block text-sm text-white/70 mb-2">Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="email" 
+                <input
+                  type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="you@example.com" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -103,13 +102,13 @@ export function SignUp() {
               <label className="block text-sm text-white/70 mb-2">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="••••••••" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -118,13 +117,13 @@ export function SignUp() {
               <label className="block text-sm text-white/70 mb-2">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                <input 
-                  type="password" 
+                <input
+                  type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  required 
-                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all" 
-                  placeholder="••••••••" 
+                  required
+                  className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 transition-all"
+                  placeholder="••••••••"
                 />
               </div>
             </div>
@@ -135,8 +134,8 @@ export function SignUp() {
               </motion.div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isLoading}
               className="w-full py-3 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300 disabled:opacity-50"
             >

@@ -40,7 +40,6 @@ router.post("/signup", async (req, res) => {
     const progress = new UserProgress({
       userId: newUser._id,
       testResults: [],
-      achievements: [],
       stats: {
         totalTests: 0,
         averageWpm: 0,
@@ -52,7 +51,7 @@ router.post("/signup", async (req, res) => {
     await progress.save();
 
     const token = jwt.sign(
-      { userId: user._id },
+      { userId: newUser._id },
       process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: "7d" }
     );
@@ -149,7 +148,6 @@ router.post("/test-result", verifyToken, async (req, res) => {
       progress = new UserProgress({
         userId: req.userId,
         testResults: [],
-        achievements: [],
       });
     }
 
@@ -177,62 +175,25 @@ router.post("/test-result", verifyToken, async (req, res) => {
   }
 });
 
+// Get test results
+router.get("/test-results", verifyToken, async (req, res) => {
+  try {
+    const progress = await UserProgress.findOne({ userId: req.userId });
+    res.json({ testResults: progress?.testResults || [] });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get test results" });
+  }
+});
+
 // Get user progress
 router.get("/", verifyToken, async (req, res) => {
   try {
     let progress = await UserProgress.findOne({ userId: req.userId });
 
     if (!progress) {
-      // Create default progress with achievements for existing users
-      const defaultAchievements = [
-        {
-          id: "first_test",
-          title: "First Steps",
-          description: "Complete your first typing test",
-          icon: "🎯",
-          unlocked: false,
-        },
-        {
-          id: "speed_demon",
-          title: "Speed Demon",
-          description: "Reach 100 WPM",
-          icon: "⚡",
-          unlocked: false,
-        },
-        {
-          id: "perfectionist",
-          title: "Perfectionist",
-          description: "Complete a test with 100% accuracy",
-          icon: "💎",
-          unlocked: false,
-        },
-        {
-          id: "dedicated",
-          title: "Dedicated",
-          description: "Complete 50 tests",
-          icon: "🏆",
-          unlocked: false,
-        },
-        {
-          id: "master",
-          title: "Typing Master",
-          description: "Reach 120 WPM",
-          icon: "👑",
-          unlocked: false,
-        },
-        {
-          id: "hard_mode",
-          title: "Challenge Accepted",
-          description: "Complete a hard difficulty test",
-          icon: "🔥",
-          unlocked: false,
-        },
-      ];
-
       progress = new UserProgress({
         userId: req.userId,
         testResults: [],
-        achievements: defaultAchievements,
         stats: {
           totalTests: 0,
           averageWpm: 0,
@@ -247,28 +208,6 @@ router.get("/", verifyToken, async (req, res) => {
     res.json(progress);
   } catch (error) {
     res.status(500).json({ error: "Failed to get progress" });
-  }
-});
-
-// Save achievements
-router.post("/achievements", verifyToken, async (req, res) => {
-  try {
-    const { achievements } = req.body;
-
-    let progress = await UserProgress.findOne({ userId: req.userId });
-    if (!progress) {
-      progress = new UserProgress({
-        userId: req.userId,
-        testResults: [],
-        achievements: [],
-      });
-    }
-
-    progress.achievements = achievements;
-    await progress.save();
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: "Failed to save achievements" });
   }
 });
 

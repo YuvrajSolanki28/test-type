@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import type { Difficulty, TextType, Language } from "../utils/aiTextGenerator";
 import { personalizedTextLibrary } from "../utils/aiTextGenerator";
 import { saveTestResult } from "../utils/statsManager";
+import { soundManager } from "../utils/soundManager";
 
 interface PersonalBests {
   easy: number | null;
@@ -78,6 +79,7 @@ export function useTypingTest() {
 
     const finalWpm = calculateWpm(userInput.length, elapsedTime);
     const finalAccuracy = calculateAccuracy(userInput, text);
+    soundManager.testComplete(); 
 
     saveTestResult({
       wpm: finalWpm,
@@ -114,38 +116,41 @@ export function useTypingTest() {
   }, [isActive, startTime, isComplete, timeLimit, completeTest]);
 
   const handleKeyPress = useCallback(
-    (key: string) => {
-      if (isComplete) return;
+  (key: string) => {
+    if (isComplete) return;
 
-      if (!isActive) {
-        setIsActive(true);
-        setStartTime(Date.now());
-        setTimeRemaining(timeLimit);
-      }
+    if (!isActive) {
+      setIsActive(true);
+      setStartTime(Date.now());
+      setTimeRemaining(timeLimit);
+    }
 
-      setUserInput((prev) => {
-        if (key === "Backspace") return prev.slice(0, -1);
+    setUserInput((prev) => {
+      if (key === "Backspace") return prev.slice(0, -1);
 
-        if (key.length === 1 || key === '  ') {
-          const newInput = prev + key;
+      if (key.length === 1 || key === '  ') {
+        const newInput = prev + key;
 
-          // error detection (fixed stale index)
-          if (key !== text[newInput.length - 1]) {
-            setErrors((e) => e + 1);
-          }
-
-          if (newInput.length === text.length) {
-            completeTest();
-          }
-
-          return newInput;
+        // Add sound effects here
+        if (key !== text[newInput.length - 1]) {
+          soundManager.incorrectKey(); // Error sound
+          setErrors((e) => e + 1);
+        } else {
+          soundManager.correctKey(); // Correct key sound
         }
 
-        return prev;
-      });
-    },
-    [text, isActive, isComplete, timeLimit, completeTest]
-  );
+        if (newInput.length === text.length) {
+          completeTest();
+        }
+
+        return newInput;
+      }
+
+      return prev;
+    });
+  },
+  [text, isActive, isComplete, timeLimit, completeTest]
+);
 
   const handleDifficultyChange = useCallback(
     (newDifficulty: Difficulty) => {

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Trophy } from 'lucide-react';
 import { getSettings } from '../utils/settingsManager';
-import type { Difficulty } from '../utils/textLibrary';
+import type { Difficulty } from '../utils/aiTextGenerator';
 
 interface StatsBarProps {
   wpm: number;

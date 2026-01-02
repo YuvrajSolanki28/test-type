@@ -10,7 +10,6 @@ import { History } from './pages/History'
 import { Leaderboard } from './pages/Leaderboard'
 import { Settings } from './pages/Settings'
 import { Profile } from './pages/Profile'
-import { Achievements } from './pages/Achievements'
 import { Friends } from './pages/Friends'
 import { Lesson } from './components/Lesson'
 import { Lessons } from './pages/Lessons'
@@ -31,7 +30,6 @@ export function App() {
           <Route path="/leaderboard" element={<Leaderboard />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/achievements" element={<Achievements />} />
           <Route path="/lessons" element={<Lessons />} />
           <Route path="/lesson/:id" element={<Lesson />} />
         </Routes>
