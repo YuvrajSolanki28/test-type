@@ -52,4 +52,4 @@ function setupSocketHandlers(io, raceManager) {
   });
 }
 
-module.exports = setupSocketHandlers;
+export default setupSocketHandlers;
