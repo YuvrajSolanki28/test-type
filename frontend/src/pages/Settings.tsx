@@ -1,27 +1,42 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Trash2, Award } from 'lucide-react'
+import { Trash2, Award, Volume2, VolumeX, Keyboard, Eye, RotateCcw, Target } from 'lucide-react'
 import { clearAllData, getAchievements, type Achievement } from '../utils/statsManager'
+import { getSettings, updateSetting, resetSettings, type SettingsConfig } from '../utils/settingsManager'
 import { Loading } from '../components/Loading'
+import { soundManager } from '../utils/soundManager'
 
 export function Settings() {
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [showConfirm, setShowConfirm] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [settings, setSettings] = useState<SettingsConfig>(getSettings())
 
   useEffect(() => {
     async function loadAchievements() {
       try {
         const data = await getAchievements()
         setAchievements(data || [])
-      } catch (error) {
-        console.error('Failed to load achievements:', error)
       } finally {
         setLoading(false)
       }
     }
     loadAchievements()
   }, [])
+
+  useEffect(() => {
+    soundManager.setEnabled(settings.soundEnabled)
+  }, [settings.soundEnabled])
+
+  const handleSettingChange = <K extends keyof SettingsConfig>(key: K, value: SettingsConfig[K]) => {
+    updateSetting(key, value)
+    setSettings(prev => ({ ...prev, [key]: value }))
+
+    // Update sound manager when sound setting changes
+    if (key === 'soundEnabled') {
+      soundManager.setEnabled(value as boolean)
+    }
+  }
 
   const handleClearData = () => {
     if (showConfirm) {
@@ -33,28 +48,30 @@ export function Settings() {
     }
   }
 
-  const unlockedCount = achievements.filter((a) => a.unlocked).length
+  const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
+    <button
+      onClick={onChange}
+      className={`relative w-12 h-6 rounded-full transition-colors ${enabled ? 'bg-blue-500' : 'bg-white/20'
+        }`}
+    >
+      <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${enabled ? 'translate-x-7' : 'translate-x-1'
+        }`} />
+    </button>
+  )
 
-  if (loading) {
-    return (
-      
-      <Loading variant="fullscreen" text="Loading settings..." />
-    )
-  }
+  if (loading) return <Loading variant='fullscreen' />
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
+    <div className="min-h-screen bg-gradient-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-4xl mx-auto px-6 py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Settings
           </h1>
-          <p className="text-white/60 mb-12">
-            Manage your preferences and data
-          </p>
+          <p className="text-white/60 mb-12">Customize your typing experience</p>
         </motion.div>
 
-        {/* Achievements */}
+        {/* Typing Settings */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -62,39 +79,114 @@ export function Settings() {
           className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
         >
           <div className="flex items-center gap-3 mb-6">
+            <Keyboard className="w-6 h-6 text-green-400" />
+            <h2 className="text-2xl font-bold">Typing</h2>
+          </div>
+
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                {settings.soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+                <div>
+                  <div className="font-medium">Sound Effects</div>
+                  <div className="text-sm text-white/60">Enable typing sound effects</div>
+                </div>
+              </div>
+              <ToggleSwitch
+                enabled={settings.soundEnabled}
+                onChange={() => {
+                  const newValue = !settings.soundEnabled
+                  handleSettingChange('soundEnabled', newValue)
+                  // Test sound when toggling
+                  if (newValue) {
+                    soundManager.keyPress()
+                  }
+                }}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Eye className="w-5 h-5" />
+                <div>
+                  <div className="font-medium">Show Live WPM</div>
+                  <div className="text-sm text-white/60">Display WPM while typing</div>
+                </div>
+              </div>
+              <ToggleSwitch
+                enabled={settings.showWPM}
+                onChange={() => handleSettingChange('showWPM', !settings.showWPM)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Target className="w-5 h-5" />
+                <div>
+                  <div className="font-medium">Highlight Errors</div>
+                  <div className="text-sm text-white/60">Highlight typing mistakes</div>
+                </div>
+              </div>
+              <ToggleSwitch
+                enabled={settings.highlightErrors}
+                onChange={() => handleSettingChange('highlightErrors', !settings.highlightErrors)}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Keyboard className="w-5 h-5" />
+                <div>
+                  <div className="font-medium">Keyboard Layout</div>
+                  <div className="text-sm text-white/60">Select your keyboard layout</div>
+                </div>
+              </div>
+              <select
+                value={settings.keyboardLayout}
+                onChange={(e) => handleSettingChange('keyboardLayout', e.target.value as SettingsConfig['keyboardLayout'])}
+                className="bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50"
+              >
+                <option value="qwerty" className="bg-gray-800 text-white">QWERTY</option>
+                <option value="dvorak" className="bg-gray-800 text-white">Dvorak</option>
+                <option value="colemak" className="bg-gray-800 text-white">Colemak</option>
+              </select>
+            </div>
+
+          </div>
+        </motion.div>
+
+        {/* Achievements */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
+        >
+          <div className="flex items-center gap-3 mb-6">
             <Award className="w-6 h-6 text-yellow-400" />
             <h2 className="text-2xl font-bold">Achievements</h2>
             <span className="ml-auto text-white/60">
-              {unlockedCount} / {achievements.length}
+              {achievements.filter(a => a.unlocked).length} / {achievements.length}
             </span>
           </div>
 
           <div className="grid md:grid-cols-2 gap-4">
-            {achievements.map((achievement, index) => (
+            {achievements.slice(0, 4).map((achievement, index) => (
               <motion.div
                 key={achievement.id}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 + index * 0.05 }}
-                className={`backdrop-blur-xl border rounded-xl p-4 ${
-                  achievement.unlocked 
-                    ? 'bg-white/10 border-white/20' 
-                    : 'bg-white/5 border-white/10 opacity-50'
-                }`}
+                className={`backdrop-blur-xl border rounded-xl p-4 ${achievement.unlocked
+                  ? 'bg-white/10 border-white/20'
+                  : 'bg-white/5 border-white/10 opacity-50'
+                  }`}
               >
                 <div className="flex items-start gap-3">
-                  <div className="text-3xl">{achievement.icon}</div>
+                  <div className="text-2xl">{achievement.icon}</div>
                   <div className="flex-1">
                     <h3 className="font-semibold mb-1">{achievement.title}</h3>
-                    <p className="text-sm text-white/60">
-                      {achievement.description}
-                    </p>
-                    {achievement.unlocked && achievement.unlockedAt && (
-                      <p className="text-xs text-green-400 mt-2">
-                        Unlocked{' '}
-                        {new Date(achievement.unlockedAt).toLocaleDateString()}
-                      </p>
-                    )}
+                    <p className="text-sm text-white/60">{achievement.description}</p>
                   </div>
                 </div>
               </motion.div>
@@ -106,19 +198,29 @@ export function Settings() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ delay: 0.3 }}
           className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8"
         >
           <h2 className="text-2xl font-bold mb-6">Data Management</h2>
 
           <div className="space-y-4">
             <button
+              onClick={() => {
+                resetSettings()
+                setSettings(getSettings())
+              }}
+              className="w-full flex items-center justify-center gap-3 p-4 rounded-xl border bg-white/5 border-white/10 hover:bg-white/10 transition-all"
+            >
+              <RotateCcw className="w-5 h-5 text-orange-400" />
+              <span>Reset to Defaults</span>
+            </button>
+
+            <button
               onClick={handleClearData}
-              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${
-                showConfirm 
-                  ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30' 
-                  : 'bg-white/5 border-white/10 hover:bg-white/10'
-              }`}
+              className={`w-full flex items-center justify-between p-4 rounded-xl border transition-all ${showConfirm
+                ? 'bg-red-500/20 border-red-500/50 hover:bg-red-500/30'
+                : 'bg-white/5 border-white/10 hover:bg-white/10'
+                }`}
             >
               <div className="flex items-center gap-3">
                 <Trash2 className="w-5 h-5 text-red-400" />

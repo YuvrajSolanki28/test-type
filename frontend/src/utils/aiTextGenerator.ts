@@ -1,15 +1,33 @@
-class TypingAnalytics {
-  constructor() {
-    this.errors = [];
-    this.weakAreas = new Map();
-  }
+// utils/aiTextGenerator.ts
+export type Difficulty = "easy" | "medium" | "hard";
+export type TextType = "normal" | "code";
+export type Language = 'javascript' | 'python' | 'java' | 'cpp';
 
-  addError(error) {
+interface TypingError {
+  character: string;
+  position: number;
+  timestamp: number;
+  expectedChar: string;
+  actualChar: string;
+}
+
+interface WeakArea {
+  pattern: string;
+  errorRate: number;
+  frequency: number;
+  lastSeen: number;
+}
+
+class TypingAnalytics {
+  private errors: TypingError[] = [];
+  private weakAreas: Map<string, WeakArea> = new Map();
+
+  addError(error: TypingError) {
     this.errors.push(error);
     this.updateWeakAreas(error);
   }
 
-  updateWeakAreas(error) {
+  private updateWeakAreas(error: TypingError) {
     const pattern = error.expectedChar;
     const existing = this.weakAreas.get(pattern) || {
       pattern,
@@ -24,17 +42,17 @@ class TypingAnalytics {
     this.weakAreas.set(pattern, existing);
   }
 
-  calculateErrorRate(pattern) {
+  private calculateErrorRate(pattern: string): number {
     const patternErrors = this.errors.filter(e => e.expectedChar === pattern);
     return patternErrors.length / Math.max(1, this.getPatternOccurrences(pattern));
   }
 
-  getPatternOccurrences(pattern) {
+  private getPatternOccurrences(pattern: string): number {
     return this.errors.filter(e => e.expectedChar === pattern).length + 
            this.errors.filter(e => e.actualChar === pattern).length;
   }
 
-  getWeakAreas() {
+  getWeakAreas(): WeakArea[] {
     return Array.from(this.weakAreas.values())
       .sort((a, b) => b.errorRate - a.errorRate)
       .slice(0, 5);
@@ -42,39 +60,41 @@ class TypingAnalytics {
 }
 
 class AITextGenerator {
-  constructor() {
-    this.analytics = new TypingAnalytics();
+  private analytics: TypingAnalytics;
+  
+  constructor(analytics: TypingAnalytics) {
+    this.analytics = analytics;
   }
 
-  generateText(difficulty = 'medium', textType = 'normal', language = null) {
+  generateText(difficulty: Difficulty, textType: TextType = 'normal', language?: Language, length: number = 100): string {
     if (textType === 'code' && language) {
       return this.generateCodeText(difficulty, language);
     }
-    return this.generateNormalText(difficulty);
+    return this.generateNormalText(difficulty, length);
   }
 
-  generateNormalText(difficulty) {
+  private generateNormalText(difficulty: Difficulty, length: number): string {
     const weakAreas = this.analytics.getWeakAreas();
     const baseWords = this.getBaseWords(difficulty);
     
     if (weakAreas.length === 0) {
-      return this.generateRandomText(baseWords, 100);
+      return this.generateRandomText(baseWords, length);
     }
 
-    return this.generateTargetedText(baseWords, weakAreas, 100);
+    return this.generateTargetedText(baseWords, weakAreas, length);
   }
 
-  generateCodeText(difficulty, language) {
+  private generateCodeText(difficulty: Difficulty, language: Language): string {
     const weakAreas = this.analytics.getWeakAreas();
     
     if (weakAreas.length === 0) {
       return this.generateBasicCode(language, difficulty);
     }
 
-    return this.generateTargetedCode(language, difficulty, weakAreas);
+    return this.generateTargetedCodeText(language, difficulty, weakAreas);
   }
 
-  generateBasicCode(language, difficulty) {
+  private generateBasicCode(language: Language, difficulty: Difficulty): string {
     const generators = {
       javascript: () => this.generateJSCode(difficulty),
       python: () => this.generatePythonCode(difficulty),
@@ -84,13 +104,14 @@ class AITextGenerator {
     return generators[language]();
   }
 
-  generateTargetedCode(language, difficulty, weakAreas) {
+  private generateTargetedCodeText(language: Language, difficulty: Difficulty, weakAreas: WeakArea[]): string {
     const targetChars = weakAreas.map(w => w.pattern);
     const code = this.generateBasicCode(language, difficulty);
+    
     return this.injectTargetChars(code, targetChars);
   }
 
-  injectTargetChars(code, targetChars) {
+  private injectTargetChars(code: string, targetChars: string[]): string {
     let enhanced = code;
     targetChars.forEach(char => {
       if (char.match(/[a-zA-Z]/)) {
@@ -100,7 +121,7 @@ class AITextGenerator {
     return enhanced;
   }
 
-  generateJSCode(difficulty) {
+  private generateJSCode(difficulty: Difficulty): string {
     const patterns = {
       easy: [
         () => `const ${this.randomVar()} = "${this.randomString()}";\nconsole.log(${this.randomVar()});`,
@@ -122,7 +143,7 @@ class AITextGenerator {
     return options[Math.floor(Math.random() * options.length)]();
   }
 
-  generatePythonCode(difficulty) {
+  private generatePythonCode(difficulty: Difficulty): string {
     const patterns = {
       easy: [
         () => `${this.randomVar()} = "${this.randomString()}"\nprint(${this.randomVar()})`,
@@ -143,7 +164,7 @@ class AITextGenerator {
     return options[Math.floor(Math.random() * options.length)]();
   }
 
-  generateJavaCode(difficulty) {
+  private generateJavaCode(difficulty: Difficulty): string {
     const patterns = {
       easy: [
         () => `public class ${this.randomClass()} {\n    public static void main(String[] args) {\n        System.out.println("${this.randomString()}");\n    }\n}`,
@@ -161,7 +182,7 @@ class AITextGenerator {
     return options[Math.floor(Math.random() * options.length)]();
   }
 
-  generateCppCode(difficulty) {
+  private generateCppCode(difficulty: Difficulty): string {
     const patterns = {
       easy: [
         () => `#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "${this.randomString()}" << endl;\n    return 0;\n}`,
@@ -179,9 +200,44 @@ class AITextGenerator {
     return options[Math.floor(Math.random() * options.length)]();
   }
 
-  generateTargetedText(baseWords, weakAreas, length) {
+  private randomVar(): string {
+    const vars = ['data', 'value', 'item', 'result', 'temp', 'count', 'index', 'total'];
+    return vars[Math.floor(Math.random() * vars.length)];
+  }
+
+  private randomFunc(): string {
+    const funcs = ['process', 'handle', 'create', 'update', 'fetch', 'parse', 'build', 'execute'];
+    return funcs[Math.floor(Math.random() * funcs.length)];
+  }
+
+  private randomClass(): string {
+    const classes = ['Manager', 'Handler', 'Builder', 'Factory', 'Service', 'Controller', 'Helper', 'Processor'];
+    return classes[Math.floor(Math.random() * classes.length)];
+  }
+
+  private randomMethod(): string {
+    const methods = ['getValue', 'process', 'execute', 'handle', 'create', 'update', 'delete', 'fetch'];
+    return methods[Math.floor(Math.random() * methods.length)];
+  }
+
+  private randomProp(): string {
+    const props = ['name', 'value', 'data', 'id', 'type', 'status', 'config', 'options'];
+    return props[Math.floor(Math.random() * props.length)];
+  }
+
+  private randomParam(): string {
+    const params = ['item', 'data', 'value', 'config', 'options', 'params', 'args', 'input'];
+    return params[Math.floor(Math.random() * params.length)];
+  }
+
+  private randomString(): string {
+    const strings = ['Hello', 'World', 'Test', 'Demo', 'Sample', 'Example', 'Data', 'Info'];
+    return strings[Math.floor(Math.random() * strings.length)];
+  }
+
+  private generateTargetedText(baseWords: string[], weakAreas: WeakArea[], length: number): string {
     const targetChars = weakAreas.map(w => w.pattern);
-    const words = [];
+    const words: string[] = [];
     let currentLength = 0;
 
     while (currentLength < length) {
@@ -193,7 +249,7 @@ class AITextGenerator {
     return words.join(' ').substring(0, length);
   }
 
-  selectWordWithTargetChars(baseWords, targetChars) {
+  private selectWordWithTargetChars(baseWords: string[], targetChars: string[]): string {
     const wordsWithTargets = baseWords.filter(word => 
       targetChars.some(char => word.includes(char))
     );
@@ -205,8 +261,8 @@ class AITextGenerator {
     return baseWords[Math.floor(Math.random() * baseWords.length)];
   }
 
-  generateRandomText(words, length) {
-    const result = [];
+  private generateRandomText(words: string[], length: number): string {
+    const result: string[] = [];
     let currentLength = 0;
 
     while (currentLength < length) {
@@ -218,7 +274,7 @@ class AITextGenerator {
     return result.join(' ').substring(0, length);
   }
 
-  getBaseWords(difficulty) {
+  private getBaseWords(difficulty: Difficulty): string[] {
     const wordSets = {
       easy: ['the', 'and', 'for', 'are', 'but', 'not', 'you', 'all', 'can', 'had', 'her', 'was', 'one', 'our', 'out', 'day', 'get', 'has', 'him', 'his', 'how', 'man', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'],
       medium: ['about', 'after', 'again', 'before', 'being', 'between', 'could', 'during', 'every', 'first', 'found', 'great', 'group', 'hand', 'help', 'here', 'home', 'house', 'important', 'keep', 'know', 'large', 'last', 'leave', 'life', 'line', 'little', 'long', 'make', 'might', 'move', 'much', 'must', 'name', 'need', 'never', 'next', 'night', 'number', 'often', 'open', 'order', 'over', 'own', 'part', 'people', 'place', 'point', 'problem', 'program', 'public', 'question', 'right', 'room', 'same', 'school', 'seem', 'several', 'should', 'show', 'small', 'social', 'some', 'start', 'state', 'still', 'system', 'take', 'tell', 'than', 'that', 'their', 'them', 'there', 'these', 'they', 'thing', 'think', 'this', 'those', 'through', 'time', 'today', 'together', 'turn', 'under', 'until', 'very', 'want', 'water', 'well', 'what', 'where', 'which', 'while', 'will', 'with', 'without', 'work', 'world', 'would', 'write', 'year', 'young'],
@@ -227,42 +283,11 @@ class AITextGenerator {
     return wordSets[difficulty];
   }
 
-  randomVar() {
-    const vars = ['data', 'value', 'item', 'result', 'temp', 'count', 'index', 'total'];
-    return vars[Math.floor(Math.random() * vars.length)];
+  getWeakAreas() {
+    return this.analytics.getWeakAreas();
   }
 
-  randomFunc() {
-    const funcs = ['process', 'handle', 'create', 'update', 'fetch', 'parse', 'build', 'execute'];
-    return funcs[Math.floor(Math.random() * funcs.length)];
-  }
-
-  randomClass() {
-    const classes = ['Manager', 'Handler', 'Builder', 'Factory', 'Service', 'Controller', 'Helper', 'Processor'];
-    return classes[Math.floor(Math.random() * classes.length)];
-  }
-
-  randomMethod() {
-    const methods = ['getValue', 'process', 'execute', 'handle', 'create', 'update', 'delete', 'fetch'];
-    return methods[Math.floor(Math.random() * methods.length)];
-  }
-
-  randomProp() {
-    const props = ['name', 'value', 'data', 'id', 'type', 'status', 'config', 'options'];
-    return props[Math.floor(Math.random() * props.length)];
-  }
-
-  randomParam() {
-    const params = ['item', 'data', 'value', 'config', 'options', 'params', 'args', 'input'];
-    return params[Math.floor(Math.random() * params.length)];
-  }
-
-  randomString() {
-    const strings = ['Hello', 'World', 'Test', 'Demo', 'Sample', 'Example', 'Data', 'Info'];
-    return strings[Math.floor(Math.random() * strings.length)];
-  }
-
-  recordError(expectedChar, actualChar, position) {
+  recordError(expectedChar: string, actualChar: string, position: number) {
     this.analytics.addError({
       character: expectedChar,
       position,
@@ -271,16 +296,7 @@ class AITextGenerator {
       actualChar
     });
   }
-
-  getWeakAreas() {
-    return this.analytics.getWeakAreas();
-  }
 }
 
-const aiTextGenerator = new AITextGenerator();
-
-function getRandomText(difficulty = 'medium', textType = 'normal', language = null) {
-  return aiTextGenerator.generateText(difficulty, textType, language);
-}
-
-module.exports = { getRandomText, aiTextGenerator };
+export const personalizedTextLibrary = new AITextGenerator(new TypingAnalytics());
+export { TypingAnalytics, AITextGenerator, type TypingError, type WeakArea };

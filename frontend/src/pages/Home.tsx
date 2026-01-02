@@ -28,7 +28,7 @@ export function Home() {
   ]
   return (
     <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
-      <div className="max-w-7xl mx-auto px-6 py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-24">
         {/* Auth Buttons */}
         {!isAuthenticated && (
           <motion.div
@@ -40,12 +40,12 @@ export function Home() {
               opacity: 1,
               y: 0,
             }}
-            className="absolute top-6 right-6 flex gap-3"
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 flex gap-2 sm:gap-3"
           >
             <Link to="/signin">
-              <button className="flex items-center gap-2 px-4 py-2 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors">
+              <button className="flex items-center gap-2 px-3 py-2 sm:px-4 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors text-sm sm:text-base">
                 <LogIn className="w-4 h-4" />
-                <span>Sign In</span>
+                <span className="hidden sm:inline">Sign In</span>
               </button>
             </Link>
           </motion.div>
@@ -63,23 +63,23 @@ export function Home() {
           }}
           className="text-center mb-24"
         >
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">T</span>
+          <div className="inline-flex items-center gap-3 mb-4 sm:mb-6">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+              <span className="text-white font-bold text-xl sm:text-2xl">T</span>
             </div>
           </div>
 
-          <h1 className="text-7xl font-bold mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 bg-linear-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             TypeSpeed
           </h1>
 
-          <p className="text-2xl text-white/60 mb-12 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/60 mb-8 sm:mb-12 max-w-2xl mx-auto px-4">
             Master your typing speed with real-time feedback, detailed
             analytics, and progressive challenges
           </p>
 
-          <div className="flex gap-4 justify-center">
-            <Link to="/test">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <Link to="/test" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{
                   scale: 1.05,
@@ -87,13 +87,13 @@ export function Home() {
                 whileTap={{
                   scale: 0.95,
                 }}
-                className="px-8 py-4 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium text-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium text-base sm:text-lg hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300"
               >
                 Start Typing Test
               </motion.button>
             </Link>
 
-            <Link to="/history">
+            <Link to="/history" className="w-full sm:w-auto">
               <motion.button
                 whileHover={{
                   scale: 1.05,
@@ -101,7 +101,7 @@ export function Home() {
                 whileTap={{
                   scale: 0.95,
                 }}
-                className="px-8 py-4 backdrop-blur-xl bg-white/5 border border-white/10 text-white rounded-xl font-medium text-lg hover:bg-white/10 transition-all duration-300"
+                className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 backdrop-blur-xl bg-white/5 border border-white/10 text-white rounded-xl font-medium text-base sm:text-lg hover:bg-white/10 transition-all duration-300"
               >
                 View Stats
               </motion.button>
@@ -110,7 +110,7 @@ export function Home() {
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -125,13 +125,13 @@ export function Home() {
               transition={{
                 delay: index * 0.1,
               }}
-              className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 hover:bg-white/10 transition-all duration-300"
+              className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 hover:bg-white/10 transition-all duration-300"
             >
-              <div className="w-12 h-12 rounded-xl bg-linear-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mb-4">
-                <feature.icon className="w-6 h-6 text-blue-400" />
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-linear-to-br from-blue-500/20 to-purple-600/20 flex items-center justify-center mb-3 sm:mb-4">
+                <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-white/60">{feature.description}</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">{feature.title}</h3>
+              <p className="text-sm sm:text-base text-white/60">{feature.description}</p>
             </motion.div>
           ))}
         </div>

@@ -1,6 +1,7 @@
 import { RaceLobby } from './RaceLobby';
 import { TypingArea } from './TypingArea';
 import { useMultiplayerRace } from '../hooks/useMultiplayerRace';
+import { Users } from 'lucide-react';
 
 interface Player {
   id: string;
@@ -24,6 +25,17 @@ export function MultiplayerRace() {
     return (
       <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white pt-24 px-6">
         <div className="max-w-7xl mx-auto">
+          {/* Friends Button */}
+          <div className="mb-6 flex justify-end">
+            <button
+              onClick={() => window.location.href = '/friends'}
+              className="px-6 py-2 bg-purple-500 hover:bg-purple-600 rounded-lg transition-colors flex items-center gap-2"
+            >
+              <Users className="w-4 h-4" />
+              Friends & Create Room
+            </button>
+          </div>
+
           <RaceLobby
             race={race}
             onJoinRace={joinRace}
@@ -38,6 +50,17 @@ export function MultiplayerRace() {
   return (
     <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white pt-24 px-6">
       <div className="max-w-7xl mx-auto">
+        {/* Friends Button */}
+        <div className="mb-6 flex justify-end">
+          <button
+            onClick={() => window.location.href = '/friends'}
+            className="px-4 py-2 bg-purple-500/80 hover:bg-purple-600 rounded-lg transition-colors flex items-center gap-2 text-sm"
+          >
+            <Users className="w-4 h-4" />
+            Friends
+          </button>
+        </div>
+
         {/* Race Progress */}
         <div className="mb-8 bg-gray-800/50 rounded-xl p-6 backdrop-blur-sm">
           <h3 className="text-lg font-semibold mb-4">Race Progress</h3>

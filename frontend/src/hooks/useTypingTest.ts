@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
-import type { Difficulty } from "../utils/textLibrary";
-import { getRandomText } from "../utils/textLibrary";
+import type { Difficulty, TextType, Language } from "../utils/aiTextGenerator";
+import { personalizedTextLibrary } from "../utils/aiTextGenerator";
 import { saveTestResult } from "../utils/statsManager";
 
 interface PersonalBests {
@@ -40,7 +40,9 @@ function savePersonalBest(difficulty: Difficulty, wpm: number) {
 export function useTypingTest() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
   const [timeLimit, setTimeLimit] = useState<number | null>(null);
-  const [text, setText] = useState(() => getRandomText("medium"));
+  const [textType, setTextType] = useState<TextType>('normal');
+  const [language, setLanguage] = useState<Language>('javascript');
+  const [text, setText] = useState(() => personalizedTextLibrary.generateText("medium"));
   const [userInput, setUserInput] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -56,7 +58,7 @@ export function useTypingTest() {
   const inputRef = useRef<HTMLDivElement>(null);
 
   const resetTest = useCallback(() => {
-    const newText = getRandomText(difficulty);
+    const newText = personalizedTextLibrary.generateText(difficulty, textType, language);
     setText(newText);
     setUserInput("");
     setStartTime(null);
@@ -68,7 +70,7 @@ export function useTypingTest() {
     setIsNewRecord(false);
 
     inputRef.current?.focus();
-  }, [difficulty, timeLimit]);
+  }, [difficulty, timeLimit, textType, language]);
 
   const completeTest = useCallback(() => {
     setIsActive(false);
@@ -124,7 +126,7 @@ export function useTypingTest() {
       setUserInput((prev) => {
         if (key === "Backspace") return prev.slice(0, -1);
 
-        if (key.length === 1) {
+        if (key.length === 1 || key === '  ') {
           const newInput = prev + key;
 
           // error detection (fixed stale index)
@@ -149,7 +151,7 @@ export function useTypingTest() {
     (newDifficulty: Difficulty) => {
       if (!isActive) {
         setDifficulty(newDifficulty);
-        const newText = getRandomText(newDifficulty);
+        const newText = personalizedTextLibrary.generateText(newDifficulty, textType, language);
         setText(newText);
         setUserInput("");
         setErrors(0);
@@ -158,7 +160,7 @@ export function useTypingTest() {
         inputRef.current?.focus();
       }
     },
-    [isActive]
+    [isActive, textType, language]
   );
 
   const handleTimeLimitChange = useCallback(
@@ -170,6 +172,34 @@ export function useTypingTest() {
     },
     [isActive]
   );
+
+  const handleTextTypeChange = useCallback((newTextType: TextType) => {
+    if (!isActive) {
+      setTextType(newTextType);
+      const newText = personalizedTextLibrary.generateText(difficulty, newTextType, language);
+      setText(newText);
+      setUserInput('');
+      setErrors(0);
+      setElapsedTime(0);
+      setIsNewRecord(false);
+      inputRef.current?.focus();
+    }
+  }, [isActive, difficulty, language]);
+
+  const handleLanguageChange = useCallback((newLanguage: Language) => {
+    if (!isActive) {
+      setLanguage(newLanguage);
+      if (textType === 'code') {
+        const newText = personalizedTextLibrary.generateText(difficulty, textType, newLanguage);
+        setText(newText);
+        setUserInput('');
+        setErrors(0);
+        setElapsedTime(0);
+        setIsNewRecord(false);
+        inputRef.current?.focus();
+      }
+    }
+  }, [isActive, difficulty, textType]);
 
   const wpm = useMemo(() => {
     return calculateWpm(userInput.length, elapsedTime);
@@ -187,6 +217,8 @@ export function useTypingTest() {
   return {
     difficulty,
     timeLimit,
+    textType,
+    language,
     text,
     userInput,
     isActive,
@@ -203,6 +235,8 @@ export function useTypingTest() {
     handleKeyPress,
     handleDifficultyChange,
     handleTimeLimitChange,
+    handleTextTypeChange,
+    handleLanguageChange,
     resetTest,
 
     inputRef,

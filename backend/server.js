@@ -7,6 +7,8 @@ const dotenv = require("dotenv");
 // Local modules
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
+const Friend = require("./routes/friends");
+const GameRoom = require("./routes/multiplayer");
 const RaceManager = require("./raceManager");
 const setupSocketHandlers = require("./socketHandlers");
 
@@ -25,6 +27,8 @@ connectDB();
 
 // API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/friends", Friend);
+app.use("/api/multiplayer", GameRoom);
 
 // HTTP + Socket.io setup
 const server = http.createServer(app);
