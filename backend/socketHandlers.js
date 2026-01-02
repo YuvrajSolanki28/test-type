@@ -1,4 +1,4 @@
-function setupSocketHandlers(io, raceManager) {
+module.exports = function setupSocketHandlers(io, raceManager) {
   io.on('connection', (socket) => {
     console.log('Player connected:', socket.id);
 
@@ -51,5 +51,3 @@ function setupSocketHandlers(io, raceManager) {
     });
   });
 }
-
-export default setupSocketHandlers;
