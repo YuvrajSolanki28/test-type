@@ -20,7 +20,7 @@ const app = express();
 
 // Middlewares
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL.split(','),
     methods: ["GET","HEAD","PUT","PATCH","POST","DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -46,7 +46,7 @@ const server = http.createServer(app);
 
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL.split(','),
     methods: ["GET", "POST"]
   }
 });
