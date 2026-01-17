@@ -54,3 +54,7 @@ const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Race server running on port ${PORT}`);
 });
+// Add this before the socket setup
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Backend server is running!' });
+});

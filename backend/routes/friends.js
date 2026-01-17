@@ -156,4 +156,101 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+//leaderboard
+//global leaderboard
+router.get('/global/:difficulty', async (req, res) => {
+  try {
+    const { difficulty } = req.params;
+    const UserProgress = require('../model/UserProgress');
+    
+    const progressData = await UserProgress.find({})
+      .populate('userId', 'username')
+      .lean();
+
+    const leaderboard = progressData.map(progress => {
+      const difficultyTests = progress.testResults.filter(test => 
+        test.difficulty === difficulty
+      );
+
+      if (difficultyTests.length === 0) return null;
+
+      const bestWpm = Math.max(...difficultyTests.map(t => t.wpm));
+      const avgAccuracy = difficultyTests.reduce((sum, t) => sum + t.accuracy, 0) / difficultyTests.length;
+
+      return {
+        username: progress.userId.username,
+        bestWpm,
+        avgAccuracy: Math.round(avgAccuracy * 100) / 100,
+        testsCount: difficultyTests.length
+      };
+    })
+    .filter(entry => entry !== null)
+    .sort((a, b) => b.bestWpm - a.bestWpm)
+    .slice(0, 100); // Top 100
+
+    res.json(leaderboard);
+  } catch (error) {
+    console.error('Global leaderboard error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+});
+
+
+//frinds leaderboard
+router.get('/friends/:difficulty', auth, async (req, res) => {
+  try {
+    const { difficulty } = req.params;
+    const userId = req.user.id;
+
+    // Get user's friends
+    const friendships = await Friend.find({
+      $or: [{ requester: userId }, { recipient: userId }],
+      status: 'accepted'
+    });
+
+    const friendIds = friendships.map(f => 
+      f.requester.toString() === userId ? f.recipient : f.requester
+    );
+    friendIds.push(userId); // Include current user
+
+    // Get progress for all friends
+    const UserProgress = require('../model/UserProgress');
+    const progressData = await UserProgress.find({ userId: { $in: friendIds } })
+      .populate('userId', 'username')
+      .lean();
+
+    // Calculate leaderboard
+    const leaderboard = progressData.map(progress => {
+      const difficultyTests = progress.testResults.filter(test => 
+        test.difficulty === difficulty
+      );
+
+      if (difficultyTests.length === 0) {
+        return {
+          username: progress.userId.username,
+          bestWpm: 0,
+          avgAccuracy: 0,
+          testsCount: 0
+        };
+      }
+
+      const bestWpm = Math.max(...difficultyTests.map(t => t.wpm));
+      const avgAccuracy = difficultyTests.reduce((sum, t) => sum + t.accuracy, 0) / difficultyTests.length;
+
+      return {
+        username: progress.userId.username,
+        bestWpm,
+        avgAccuracy: Math.round(avgAccuracy * 100) / 100,
+        testsCount: difficultyTests.length
+      };
+    }).sort((a, b) => b.bestWpm - a.bestWpm);
+
+    res.json(leaderboard);
+  } catch (error) {
+    console.error('Friends leaderboard error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
+});
+
+
 module.exports = router;

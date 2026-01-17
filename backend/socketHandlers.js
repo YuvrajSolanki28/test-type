@@ -50,4 +50,14 @@ module.exports = function setupSocketHandlers(io, raceManager) {
       }
     });
   });
+  const createPrivateRoom = (hostId, difficulty) => {
+  const roomId = generateRoomId();
+  const room = raceManager.createPrivateRoom(roomId, hostId, difficulty);
+  return room;
+};
+
+const inviteFriend = (roomId, friendId) => {
+  // Send invitation to friend
+  io.to(friendId).emit('roomInvitation', { roomId });
+};
 }

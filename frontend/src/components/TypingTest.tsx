@@ -4,6 +4,7 @@ import { TypingArea } from './TypingArea';
 import { CodeTypingArea } from './CodeTypingArea';
 import { ResultsModal } from './ResultsModal';
 import { useTypingTest } from '../hooks/useTypingTest';
+import { Footer } from './Footer';
 
 export function TypingTest() {
   const {
@@ -104,6 +105,7 @@ export function TypingTest() {
 
       <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="fixed bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <Footer />
     </div>
   );
 }
