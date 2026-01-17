@@ -25,6 +25,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
 }));
+
 app.use(express.json());
 
 // Connect to MongoDB
@@ -34,6 +35,11 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/friends", Friend);
 app.use("/api/multiplayer", GameRoom);
+
+// Test route
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Backend server is running!' });
+});
 
 // HTTP + Socket.io setup
 const server = http.createServer(app);
@@ -45,7 +51,7 @@ const io = socketIo(server, {
   }
 });
 
-//Race system
+// Race system
 const raceManager = new RaceManager();
 setupSocketHandlers(io, raceManager);
 
@@ -53,8 +59,4 @@ setupSocketHandlers(io, raceManager);
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
   console.log(`Race server running on port ${PORT}`);
-});
-// Add this before the socket setup
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Backend server is running!' });
 });
