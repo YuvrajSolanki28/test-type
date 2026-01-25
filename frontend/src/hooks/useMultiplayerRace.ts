@@ -27,7 +27,8 @@ export function useMultiplayerRace() {
   const inputRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const newSocket = io('ws://localhost:3001');
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+    const newSocket = io(backendUrl);
     newSocket.on('connect', () => {
       setSocket(newSocket);
       setConnected(true);
