@@ -9,6 +9,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/auth");
 const Friend = require("./routes/friends");
 const GameRoom = require("./routes/multiplayer");
+const leaderboardRoutes = require("./routes/leaderboard");
 const RaceManager = require("./raceManager");
 const setupSocketHandlers = require("./socketHandlers");
 
@@ -35,6 +36,7 @@ connectDB();
 app.use("/api/auth", authRoutes);
 app.use("/api/friends", Friend);
 app.use("/api/multiplayer", GameRoom);
+app.use("/api/leaderboard", leaderboardRoutes);
 
 // Test route
 app.get('/api/test', (req, res) => {

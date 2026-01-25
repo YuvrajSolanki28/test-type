@@ -1,0 +1,59 @@
+{
+  "name": "TypeSpeed - Typing Test",
+  "short_name": "TypeSpeed",
+  "description": "Master your typing speed with real-time feedback, detailed analytics, and progressive challenges",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [],
+  "screenshots": [
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["education", "productivity", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Start Test",
+      "short_name": "Test",
+      "description": "Start a new typing test",
+      "url": "/test",
+      "icons": [{ "src": "/icons/shortcut-test.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Multiplayer Race",
+      "short_name": "Race",
+      "description": "Join a multiplayer race",
+      "url": "/race",
+      "icons": [{ "src": "/icons/shortcut-race.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "View Stats",
+      "short_name": "Stats",
+      "description": "View your typing history",
+      "url": "/history",
+      "icons": [{ "src": "/icons/shortcut-stats.png", "sizes": "96x96" }]
+    }
+  ]
+}

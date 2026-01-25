@@ -1,6 +1,10 @@
-import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, Target, Zap } from 'lucide-react';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trophy, TrendingUp, Target, Zap, ChevronDown, Keyboard, Share2 } from 'lucide-react';
 import type{ Difficulty } from '../utils/aiTextGenerator';
+import { KeyboardHeatmap } from './KeyboardHeatmap';
+import { SocialShare } from './SocialShare';
+
 interface ResultsModalProps {
   wpm: number;
   accuracy: number;
@@ -10,7 +14,10 @@ interface ResultsModalProps {
   personalBest: number | null;
   isNewRecord: boolean;
   onRestart: () => void;
+  errorKeys?: Map<string, number>;
+  correctKeys?: Map<string, number>;
 }
+
 export function ResultsModal({
   wpm,
   accuracy,
@@ -19,8 +26,13 @@ export function ResultsModal({
   difficulty,
   personalBest,
   isNewRecord,
-  onRestart
+  onRestart,
+  errorKeys = new Map(),
+  correctKeys = new Map(),
 }: ResultsModalProps) {
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [showShare, setShowShare] = useState(false);
+  
   const stats = [{
     icon: Zap,
     label: 'WPM',
@@ -135,13 +147,75 @@ export function ResultsModal({
               </span>
             </motion.div>}
 
+          {/* Keyboard Heatmap Toggle */}
+          {(errorKeys.size > 0 || correctKeys.size > 0) && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              className="mb-6"
+            >
+              <button
+                onClick={() => setShowHeatmap(!showHeatmap)}
+                className="w-full flex items-center justify-between px-4 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all"
+              >
+                <div className="flex items-center gap-2">
+                  <Keyboard className="w-5 h-5 text-purple-400" />
+                  <span className="text-white/80">Keyboard Analysis</span>
+                </div>
+                <ChevronDown
+                  className={`w-5 h-5 text-white/60 transition-transform ${showHeatmap ? 'rotate-180' : ''}`}
+                />
+              </button>
+              
+              <AnimatePresence>
+                {showHeatmap && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pt-4">
+                      <KeyboardHeatmap
+                        errorKeys={errorKeys}
+                        correctKeys={correctKeys}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.div>
+          )}
+
           {/* Actions */}
           <div className="flex gap-4">
             <button onClick={onRestart} className="flex-1 px-6 py-4 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300">
               Try Again
             </button>
+            <button 
+              onClick={() => setShowShare(true)} 
+              className="px-6 py-4 bg-white/5 border border-white/10 text-white rounded-xl font-medium hover:bg-white/10 transition-all duration-300 flex items-center gap-2"
+            >
+              <Share2 className="w-5 h-5" />
+              Share
+            </button>
           </div>
         </div>
       </motion.div>
+      
+      {/* Social Share Modal */}
+      <SocialShare
+        result={{
+          wpm,
+          accuracy,
+          time,
+          difficulty,
+          isNewRecord,
+        }}
+        isOpen={showShare}
+        onClose={() => setShowShare(false)}
+      />
     </motion.div>;
 }

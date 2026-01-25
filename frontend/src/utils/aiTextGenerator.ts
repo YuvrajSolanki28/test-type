@@ -1,6 +1,6 @@
 // utils/aiTextGenerator.ts
 export type Difficulty = "easy" | "medium" | "hard";
-export type TextType = "normal" | "code";
+export type TextType = "normal" | "code" | "quotes" | "words";
 export type Language = 'javascript' | 'python' | 'java' | 'cpp';
 
 interface TypingError {
@@ -70,7 +70,68 @@ class AITextGenerator {
     if (textType === 'code' && language) {
       return this.generateCodeText(difficulty, language);
     }
+    if (textType === 'quotes') {
+      return this.generateQuoteText(difficulty);
+    }
+    if (textType === 'words') {
+      return this.generateWordsText(difficulty, length);
+    }
     return this.generateNormalText(difficulty, length);
+  }
+
+  private generateQuoteText(difficulty: Difficulty): string {
+    const quotes = {
+      easy: [
+        "The only way to do great work is to love what you do.",
+        "Life is what happens when you're busy making other plans.",
+        "The future belongs to those who believe in the beauty of their dreams.",
+        "It is during our darkest moments that we must focus to see the light.",
+        "The best time to plant a tree was twenty years ago. The second best time is now.",
+        "Your time is limited, don't waste it living someone else's life.",
+        "If you want to lift yourself up, lift up someone else.",
+        "The mind is everything. What you think you become.",
+        "Strive not to be a success, but rather to be of value.",
+        "I have not failed. I've just found ten thousand ways that won't work.",
+        "The only impossible journey is the one you never begin.",
+        "Everything you've ever wanted is on the other side of fear."
+      ],
+      medium: [
+        "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+        "In the middle of every difficulty lies opportunity. What lies behind us is not as important.",
+        "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+        "Tell me and I forget. Teach me and I remember. Involve me and I learn something new.",
+        "It does not matter how slowly you go as long as you do not stop moving forward daily.",
+        "The way to get started is to quit talking and begin doing something meaningful today.",
+        "If life were predictable it would cease to be life, and be without flavor entirely.",
+        "Spread love everywhere you go. Let no one ever come to you without leaving happier.",
+        "When you reach the end of your rope, tie a knot in it and hang on with all your might.",
+        "Always remember that you are absolutely unique. Just like everyone else in the world."
+      ],
+      hard: [
+        "Twenty years from now you will be more disappointed by the things that you didn't do than by the ones you did do. So throw off the bowlines. Sail away from the safe harbor.",
+        "The question isn't who is going to let me; it's who is going to stop me from achieving greatness.",
+        "I've learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel about themselves.",
+        "Whether you think you can or you think you can't, you're right. It's all about perspective.",
+        "I attribute my success to this: I never gave or took any excuse for my failures throughout life.",
+        "You miss one hundred percent of the shots you don't take in life, so always take your shot.",
+        "The most difficult thing is the decision to act, the rest is merely tenacity and hard work.",
+        "There is only one way to avoid criticism: do nothing, say nothing, and be absolutely nothing."
+      ]
+    };
+
+    const quoteList = quotes[difficulty];
+    return quoteList[Math.floor(Math.random() * quoteList.length)];
+  }
+
+  private generateWordsText(difficulty: Difficulty, count: number): string {
+    const words = this.getBaseWords(difficulty);
+    const result: string[] = [];
+    
+    for (let i = 0; i < Math.ceil(count / 5); i++) {
+      result.push(words[Math.floor(Math.random() * words.length)]);
+    }
+    
+    return result.join(' ');
   }
 
   private generateNormalText(difficulty: Difficulty, length: number): string {

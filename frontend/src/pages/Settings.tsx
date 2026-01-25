@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Trash2, Volume2, VolumeX, Keyboard, Eye, RotateCcw, Target } from 'lucide-react'
+import { Trash2, Volume2, VolumeX, Keyboard, Eye, RotateCcw, Target, Palette, Check } from 'lucide-react'
 import { clearAllData } from '../utils/statsManager'
 import { getSettings, updateSetting, resetSettings, type SettingsConfig } from '../utils/settingsManager'
 import { Loading } from '../components/Loading'
 import { soundManager } from '../utils/soundManager'
+import { useTheme }  from '../hooks/useTheme'
+import { themes } from '../utils/themeManager'
+import type { ThemeId } from '../utils/themeManager'
 
 const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
   <button
@@ -19,6 +22,7 @@ export function Settings() {
   const [showConfirm, setShowConfirm] = useState(false)
   const [loading] = useState(false)
   const [settings, setSettings] = useState<SettingsConfig>(getSettings())
+  const { currentTheme, setTheme } = useTheme()
 
   useEffect(() => {
     soundManager.setEnabled(settings.soundEnabled)
@@ -134,6 +138,88 @@ export function Settings() {
                 <option value="colemak" className="bg-gray-800 text-white">Colemak</option>
               </select>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Theme Selection */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-8 mb-8"
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <Palette className="w-6 h-6 text-purple-400" />
+            <h2 className="text-2xl font-bold">Theme</h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {(Object.keys(themes) as ThemeId[]).map((themeId) => {
+              const theme = themes[themeId]
+              const isActive = currentTheme === themeId
+              
+              return (
+                <motion.button
+                  key={themeId}
+                  onClick={() => setTheme(themeId)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`relative p-4 rounded-xl border-2 transition-all ${
+                    isActive 
+                      ? 'border-blue-500 ring-2 ring-blue-500/30' 
+                      : 'border-white/10 hover:border-white/30'
+                  }`}
+                  style={{ background: theme.background }}
+                >
+                  {/* Active indicator */}
+                  {isActive && (
+                    <div className="absolute top-2 right-2 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                  
+                  {/* Theme preview */}
+                  <div className="space-y-2">
+                    {/* Color preview dots */}
+                    <div className="flex gap-1.5 mb-3">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: theme.primary }}
+                      />
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: theme.accent }}
+                      />
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: theme.correct }}
+                      />
+                    </div>
+                    
+                    {/* Sample text preview */}
+                    <div 
+                      className="text-xs font-mono p-2 rounded"
+                      style={{ 
+                        backgroundColor: theme.background,
+                        color: theme.text 
+                      }}
+                    >
+                      <span style={{ color: theme.correct }}>the </span>
+                      <span style={{ color: theme.error }}>q</span>
+                      <span style={{ color: theme.textMuted }}>uick fox</span>
+                    </div>
+                    
+                    {/* Theme name */}
+                    <div 
+                      className="text-sm font-medium capitalize mt-2"
+                      style={{ color: theme.text }}
+                    >
+                      {theme.name}
+                    </div>
+                  </div>
+                </motion.button>
+              )
+            })}
           </div>
         </motion.div>
 

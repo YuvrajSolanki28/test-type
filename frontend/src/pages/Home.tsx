@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Zap, Target, Trophy, TrendingUp, LogIn } from 'lucide-react'
 import { useAuth } from '../hooks/useAuth'
+import { DailyChallenges } from '../components/DailyChallenges'
+
 export function Home() {
   const { isAuthenticated } = useAuth()
   const features = [
@@ -110,7 +112,7 @@ export function Home() {
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -135,6 +137,16 @@ export function Home() {
             </motion.div>
           ))}
         </div>
+
+        {/* Daily Challenges Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="max-w-2xl mx-auto"
+        >
+          <DailyChallenges />
+        </motion.div>
       </div>
 
       {/* Ambient glow effects */}
