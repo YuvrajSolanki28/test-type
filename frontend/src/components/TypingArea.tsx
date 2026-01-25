@@ -54,21 +54,35 @@ export function TypingArea({
   }, [inputRef]);
 
   return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center p-4">
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-4xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-12 relative overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-4xl glass rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl shadow-indigo-500/20"
       >
-        <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-purple-500/5" />
+        {/* Background gradient accent */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5" />
+        
+        {/* Glassmorphism rim effect */}
+        <div className="absolute inset-0 rounded-3xl bg-linear-to-br from-white/10 to-transparent pointer-events-none" style={{ 
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%)',
+          borderRadius: '24px'
+        }} />
 
         <div className="relative">
           {isActive && (
-            <ProgressBar 
-              progress={progress} 
-              timeLimit={timeLimit} 
-              timeRemaining={timeRemaining} 
-            />
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <ProgressBar 
+                progress={progress} 
+                timeLimit={timeLimit} 
+                timeRemaining={timeRemaining} 
+              />
+            </motion.div>
           )}
 
           {isActive && (
@@ -76,17 +90,19 @@ export function TypingArea({
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               onClick={onReset}
-              className="absolute top-0 right-0 p-2 backdrop-blur-xl bg-white/5 border border-white/10 rounded-lg hover:bg-white/10 transition-colors"
+              whileHover={{ scale: 1.1, rotate: 90 }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute top-0 right-0 p-2 glass rounded-xl hover:bg-white/15 transition-all duration-200 shadow-lg"
               title="Restart (ESC)"
             >
-              <RotateCcw className="w-5 h-5 text-white/70" />
+              <RotateCcw className="w-5 h-5 text-indigo-400" />
             </motion.button>
           )}
 
           <div
             ref={inputRef}
             tabIndex={0}
-            className="relative font-mono text-2xl leading-relaxed tracking-wide focus:outline-none whitespace-pre-wrap"
+            className="relative font-mono text-lg sm:text-2xl leading-relaxed tracking-wide focus:outline-none whitespace-pre-wrap transition-all duration-200"
           >
             {text.split('').map((char, index) => {
               const isTyped = index < userInput.length;
@@ -95,38 +111,70 @@ export function TypingArea({
               const isSpace = char === ' ';
 
               return (
-                <span
+                <motion.span
                   key={index}
+                  initial={{ opacity: 0.3, y: 0 }}
+                  animate={{
+                    opacity: isTyped ? 1 : 0.3,
+                    y: isCurrent ? -2 : 0,
+                  }}
+                  transition={{ duration: 0.1 }}
                   className={`relative transition-all duration-100 ${
                     isSpace ? 'inline-block min-w-[0.5em]' : 'inline-block'
                   } ${
                     isTyped
                       ? isCorrect
-                        ? 'text-green-400'
-                        : 'text-red-400 bg-red-500/20 rounded'
+                        ? 'text-emerald-400'
+                        : 'text-red-400 bg-red-500/20 rounded px-0.5'
                       : 'text-white/30'
                   } ${isCurrent ? 'current-char' : ''}`}
                 >
                   {isSpace ? '\u00A0' : char}
                   {isCurrent && !isComplete && (
                     <motion.span
-                      className="absolute -left-0.5 top-0 bottom-0 w-0.5 bg-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.8)]"
-                      animate={{ opacity: [1, 0.3, 1] }}
+                      className="absolute -left-1 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-purple-400 shadow-[0_0_15px_rgba(99,102,241,0.8)] rounded-full"
+                      animate={{ opacity: [1, 0.2, 1] }}
                       transition={{ duration: 0.8, repeat: Infinity }}
                     />
                   )}
-                </span>
+                </motion.span>
               );
             })}
           </div>
 
           {!isActive && !isComplete && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="mt-8 text-center text-white/40 text-sm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mt-8 text-center"
             >
-              Press any letter (A-Z) to start typing...
+              <p className="text-white/50 text-sm mb-3">Press any letter to start</p>
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="inline-block"
+              >
+                <div className="px-4 py-2 glass rounded-xl text-white/70 text-xs font-medium">
+                  Ready to type...
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+
+          {isComplete && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm rounded-3xl"
+            >
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+                className="text-center"
+              >
+                <p className="text-emerald-400 font-bold text-lg">Complete! 🎉</p>
+              </motion.div>
             </motion.div>
           )}
         </div>

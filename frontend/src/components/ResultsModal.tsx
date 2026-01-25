@@ -49,124 +49,142 @@ export function ResultsModal({
     value: `${time}s`,
     color: 'from-cyan-500 to-blue-500'
   }];
-  return <motion.div initial={{
-    opacity: 0
-  }} animate={{
-    opacity: 1
-  }} className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm">
-      <motion.div initial={{
-      scale: 0.9,
-      opacity: 0,
-      y: 20
-    }} animate={{
-      scale: 1,
-      opacity: 1,
-      y: 0
-    }} transition={{
-      delay: 0.1
-    }} className="w-full max-w-2xl backdrop-blur-xl bg-white/10 border border-white/20 rounded-3xl p-8 relative overflow-hidden">
-        <div className="absolute inset-0 bg-linear-to-br from-blue-500/10 to-purple-500/10" />
+  return <motion.div 
+    initial={{ opacity: 0 }} 
+    animate={{ opacity: 1 }} 
+    className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/70 backdrop-blur-md"
+  >
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 30 }} 
+        animate={{ scale: 1, opacity: 1, y: 0 }} 
+        transition={{ delay: 0.1, duration: 0.4, type: "spring" }} 
+        className="w-full max-w-2xl glass rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10" />
 
         <div className="relative">
           {/* Header */}
           <div className="text-center mb-8">
-            {isNewRecord && <motion.div initial={{
-            scale: 0
-          }} animate={{
-            scale: 1
-          }} transition={{
-            delay: 0.3,
-            type: 'spring'
-          }} className="inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-500/30 rounded-full mb-4">
-                <Trophy className="w-5 h-5 text-yellow-400" />
-                <span className="text-yellow-400 font-semibold">
-                  New Personal Best!
-                </span>
-              </motion.div>}
-            <h2 className="text-4xl font-bold bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-2">
+            {isNewRecord && (
+              <motion.div 
+                initial={{ scale: 0, rotate: -180 }} 
+                animate={{ scale: 1, rotate: 0 }} 
+                transition={{ delay: 0.3, type: 'spring', stiffness: 200 }} 
+                className="inline-flex items-center gap-2 px-4 py-2 gradient-success text-white border border-emerald-500/50 rounded-full mb-4 shadow-lg shadow-emerald-500/30"
+              >
+                <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity }}>
+                  <Trophy className="w-5 h-5" />
+                </motion.div>
+                <span className="font-bold">New Personal Best!</span>
+              </motion.div>
+            )}
+            <motion.h2 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl sm:text-5xl font-bold text-gradient mb-2"
+            >
               Test Complete!
-            </h2>
-            <p className="text-white/60">
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/70"
+            >
               Difficulty:{' '}
-              <span className="text-white/90 font-medium capitalize">
+              <span className="text-white font-semibold capitalize">
                 {difficulty}
               </span>
-            </p>
+            </motion.p>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            {stats.map((stat, index) => <motion.div key={stat.label} initial={{
-            opacity: 0,
-            y: 20
-          }} animate={{
-            opacity: 1,
-            y: 0
-          }} transition={{
-            delay: 0.2 + index * 0.1
-          }} className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
-                <div className={`inline-flex items-center justify-center w-12 h-12 rounded-xl bg-linear-to-br ${stat.color} mb-3`}>
-                  <stat.icon className="w-6 h-6 text-white" />
-                </div>
-                <div className="text-3xl font-bold text-white mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-sm text-white/50">{stat.label}</div>
-              </motion.div>)}
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon
+              return (
+                <motion.div 
+                  key={stat.label} 
+                  initial={{ opacity: 0, y: 20 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  whileHover={{ y: -5, scale: 1.05 }}
+                  className={`glass rounded-2xl p-4 sm:p-6 text-center cursor-pointer bg-gradient-to-br ${stat.color} shadow-lg transition-all duration-300`}
+                >
+                  <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 mb-2 sm:mb-3">
+                    <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-bold text-white mb-1">
+                    {stat.value}
+                  </div>
+                  <div className="text-xs sm:text-sm text-white/70 font-medium">{stat.label}</div>
+                </motion.div>
+              )
+            })}
           </div>
 
           {/* Personal Best Comparison */}
-          {personalBest && !isNewRecord && <motion.div initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          delay: 0.5
-        }} className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl p-4 mb-6 flex items-center justify-between">
+          {personalBest && !isNewRecord && (
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              transition={{ delay: 0.5 }}
+              className="glass rounded-2xl p-4 mb-6 flex items-center justify-between hover:bg-white/15 transition-all duration-300"
+            >
               <div className="flex items-center gap-3">
-                <Trophy className="w-5 h-5 text-yellow-400/70" />
-                <span className="text-white/70">
+                <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
+                  <Trophy className="w-5 h-5 text-yellow-400" />
+                </motion.div>
+                <span className="text-white/80 font-medium">
                   Your best on {difficulty}:
                 </span>
               </div>
-              <span className="text-xl font-bold text-white">
+              <span className="text-xl font-bold text-indigo-300">
                 {personalBest} WPM
               </span>
-            </motion.div>}
+            </motion.div>
+          )}
 
           {/* Errors */}
-          {errors > 0 && <motion.div initial={{
-          opacity: 0
-        }} animate={{
-          opacity: 1
-        }} transition={{
-          delay: 0.6
-        }} className="backdrop-blur-xl bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-6 text-center">
-              <span className="text-red-400">
+          {errors > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, x: 20 }} 
+              animate={{ opacity: 1, x: 0 }} 
+              transition={{ delay: 0.6 }}
+              className="glass bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500/30 rounded-2xl p-4 mb-6 text-center"
+            >
+              <span className="text-red-300 font-medium">
                 {errors} mistake{errors !== 1 ? 's' : ''} made
               </span>
-            </motion.div>}
+            </motion.div>
+          )}
 
           {/* Keyboard Heatmap Toggle */}
           {(errorKeys.size > 0 || correctKeys.size > 0) && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.7 }}
               className="mb-6"
             >
-              <button
+              <motion.button
                 onClick={() => setShowHeatmap(!showHeatmap)}
-                className="w-full flex items-center justify-between px-4 py-3 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="w-full flex items-center justify-between px-4 py-3 glass rounded-2xl hover:bg-white/15 transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-center gap-2">
-                  <Keyboard className="w-5 h-5 text-purple-400" />
-                  <span className="text-white/80">Keyboard Analysis</span>
+                  <Keyboard className="w-5 h-5 text-indigo-400" />
+                  <span className="text-white font-medium">Keyboard Analysis</span>
                 </div>
-                <ChevronDown
-                  className={`w-5 h-5 text-white/60 transition-transform ${showHeatmap ? 'rotate-180' : ''}`}
-                />
-              </button>
+                <motion.div
+                  animate={{ rotate: showHeatmap ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="w-5 h-5 text-white/60" />
+                </motion.div>
+              </motion.button>
               
               <AnimatePresence>
                 {showHeatmap && (
@@ -190,17 +208,24 @@ export function ResultsModal({
           )}
 
           {/* Actions */}
-          <div className="flex gap-4">
-            <button onClick={onRestart} className="flex-1 px-6 py-4 bg-linear-to-r from-blue-500 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-blue-500/50 transition-all duration-300">
+          <div className="flex gap-3 sm:gap-4">
+            <motion.button 
+              onClick={onRestart}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex-1 px-6 py-3 sm:py-4 gradient-primary text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/50 hover:shadow-indigo-500/70 transition-all duration-300"
+            >
               Try Again
-            </button>
-            <button 
-              onClick={() => setShowShare(true)} 
-              className="px-6 py-4 bg-white/5 border border-white/10 text-white rounded-xl font-medium hover:bg-white/10 transition-all duration-300 flex items-center gap-2"
+            </motion.button>
+            <motion.button 
+              onClick={() => setShowShare(true)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-4 sm:px-6 py-3 sm:py-4 glass text-white rounded-2xl font-bold hover:bg-white/15 transition-all duration-300 flex items-center gap-2 shadow-lg"
             >
               <Share2 className="w-5 h-5" />
-              Share
-            </button>
+              <span className="hidden sm:inline">Share</span>
+            </motion.button>
           </div>
         </div>
       </motion.div>

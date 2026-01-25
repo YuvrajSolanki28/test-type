@@ -31,16 +31,24 @@ export function Navigation() {
     links.push({ path: '/profile', icon: User, label: 'Profile' })
   }
 
+  const navLinkVariants = {
+    inactive: { scale: 1, opacity: 0.6 },
+    active: { scale: 1.1, opacity: 1 },
+    hover: { scale: 1.15, x: 4 }
+  }
+
   return (
     <>
       {/* Mobile Navigation */}
       <div className="lg:hidden">
-        <button
+        <motion.button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="fixed top-4 left-4 z-50 p-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="fixed top-6 left-4 z-50 p-3 glass rounded-2xl text-white/60 hover:text-white transition-colors duration-200 shadow-lg"
         >
           {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
+        </motion.button>
 
         <AnimatePresence>
           {isMobileMenuOpen && (
@@ -48,7 +56,7 @@ export function Navigation() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-md"
               onClick={() => setIsMobileMenuOpen(false)}
             />
           )}
@@ -57,32 +65,41 @@ export function Navigation() {
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.nav
-              initial={{ x: -300 }}
-              animate={{ x: 0 }}
-              exit={{ x: -300 }}
+              initial={{ x: -300, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: -300, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed left-0 top-0 bottom-0 w-64 z-50 backdrop-blur-xl bg-white/5 border-r border-white/10 p-6"
+              className="fixed left-0 top-0 bottom-0 w-64 z-50 glass border-r border-white/10 p-6 shadow-2xl shadow-black/50"
             >
-              <div className="mt-16 flex flex-col gap-2">
-                {links.map((link) => {
+              <div className="mt-20 flex flex-col gap-3">
+                {links.map((link, idx) => {
                   const isActive = location.pathname === link.path
                   const Icon = link.icon
                   return (
-                    <Link 
-                      key={link.path} 
-                      to={link.path} 
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="relative group"
+                    <motion.div
+                      key={link.path}
+                      initial={{ x: -20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: idx * 0.05 }}
                     >
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
+                      <Link 
+                        to={link.path} 
+                        onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <Icon className="w-5 h-5" />
-                        <span className="font-medium">{link.label}</span>
-                      </motion.div>
-                    </Link>
+                        <motion.div
+                          whileHover={{ scale: 1.05, x: 4 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`flex items-center gap-3 p-4 rounded-2xl transition-all duration-300 ${
+                            isActive 
+                              ? 'gradient-primary text-white shadow-lg shadow-indigo-500/50' 
+                              : 'glass text-white/70 hover:text-white hover:bg-white/15'
+                          }`}
+                        >
+                          <Icon className="w-5 h-5" />
+                          <span className="font-medium">{link.label}</span>
+                        </motion.div>
+                      </Link>
+                    </motion.div>
                   )
                 })}
               </div>
@@ -94,7 +111,7 @@ export function Navigation() {
       {/* Desktop Navigation */}
       <div className="hidden lg:block">
         <div
-          className="fixed left-0 top-0 bottom-0 w-16 z-50"
+          className="fixed left-0 top-0 bottom-0 w-24 z-40"
           onMouseEnter={() => setIsVisible(true)}
           onMouseLeave={() => setIsVisible(false)}
         />
@@ -106,10 +123,10 @@ export function Navigation() {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -100, opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 200, delay: 0.1 }}
-              whileHover={{ scale: 1.1, x: 4 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.15, x: 4 }}
+              whileTap={{ scale: 0.9 }}
               onClick={toggleVisibility}
-              className="fixed left-6 top-1/2 -translate-y-1/2 z-50 p-3 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200 shadow-lg"
+              className="fixed left-6 top-1/2 -translate-y-1/2 z-50 p-3 glass rounded-2xl text-white/60 hover:text-white transition-colors duration-200 shadow-xl hover:shadow-indigo-500/30"
             >
               <ChevronRight className="w-5 h-5" />
             </motion.button>
@@ -117,28 +134,43 @@ export function Navigation() {
         </AnimatePresence>
 
         <motion.nav
-          initial={{ x: -100 }}
-          animate={{ x: isVisible ? 0 : -100 }}
+          initial={{ x: -280 }}
+          animate={{ x: isVisible ? 0 : -280 }}
           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
           onMouseEnter={() => setIsVisible(true)}
           onMouseLeave={() => setIsVisible(false)}
           className="fixed left-6 top-1/2 -translate-y-1/2 z-50"
         >
-          <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-3 shadow-2xl">
+          <div className="glass rounded-3xl p-4 shadow-2xl shadow-black/50 min-w-max">
             <div className="flex flex-col gap-2">
-              {links.map((link) => {
+              {links.map((link, idx) => {
                 const isActive = location.pathname === link.path
                 const Icon = link.icon
                 return (
-                  <Link key={link.path} to={link.path} className="relative group">
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`p-3 rounded-xl transition-all duration-200 ${isActive ? 'bg-linear-to-r from-blue-500 to-purple-600 text-white shadow-lg shadow-blue-500/50' : 'text-white/60 hover:text-white hover:bg-white/5'}`}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </motion.div>
-                  </Link>
+                  <motion.div
+                    key={link.path}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <Link to={link.path} className="block">
+                      <motion.div
+                        variants={navLinkVariants}
+                        initial="inactive"
+                        animate={isActive ? 'active' : 'inactive'}
+                        whileHover="hover"
+                        whileTap={{ scale: 0.9 }}
+                        className={`p-3 rounded-2xl transition-all duration-300 flex items-center justify-center ${
+                          isActive 
+                            ? 'gradient-primary text-white shadow-lg shadow-indigo-500/50' 
+                            : 'glass text-white/70 hover:text-white hover:bg-white/15'
+                        }`}
+                        title={link.label}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </motion.div>
+                    </Link>
+                  </motion.div>
                 )
               })}
             </div>
