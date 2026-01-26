@@ -60,7 +60,7 @@ export function ResultsModal({
         transition={{ delay: 0.1, duration: 0.4, type: "spring" }} 
         className="w-full max-w-2xl glass rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-purple-500/10" />
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 via-transparent to-purple-500/10" />
 
         <div className="relative">
           {/* Header */}
@@ -110,7 +110,7 @@ export function ResultsModal({
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ delay: 0.2 + index * 0.1 }}
                   whileHover={{ y: -5, scale: 1.05 }}
-                  className={`glass rounded-2xl p-4 sm:p-6 text-center cursor-pointer bg-gradient-to-br ${stat.color} shadow-lg transition-all duration-300`}
+                  className={`glass rounded-2xl p-4 sm:p-6 text-center cursor-pointer bg-linear-to-br ${stat.color} shadow-lg transition-all duration-300`}
                 >
                   <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 mb-2 sm:mb-3">
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -152,7 +152,7 @@ export function ResultsModal({
               initial={{ opacity: 0, x: 20 }} 
               animate={{ opacity: 1, x: 0 }} 
               transition={{ delay: 0.6 }}
-              className="glass bg-gradient-to-r from-red-500/20 to-orange-500/20 border-red-500/30 rounded-2xl p-4 mb-6 text-center"
+              className="glass bg-linear-to-r from-red-500/20 to-orange-500/20 border-red-500/30 rounded-2xl p-4 mb-6 text-center"
             >
               <span className="text-red-300 font-medium">
                 {errors} mistake{errors !== 1 ? 's' : ''} made

@@ -62,7 +62,7 @@ export function TypingArea({
         className="w-full max-w-4xl glass rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl shadow-indigo-500/20"
       >
         {/* Background gradient accent */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-transparent to-purple-500/5" />
+        <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-purple-500/5" />
         
         {/* Glassmorphism rim effect */}
         <div className="absolute inset-0 rounded-3xl bg-linear-to-br from-white/10 to-transparent pointer-events-none" style={{ 
@@ -132,7 +132,7 @@ export function TypingArea({
                   {isSpace ? '\u00A0' : char}
                   {isCurrent && !isComplete && (
                     <motion.span
-                      className="absolute -left-1 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-400 to-purple-400 shadow-[0_0_15px_rgba(99,102,241,0.8)] rounded-full"
+                      className="absolute -left-1 top-0 bottom-0 w-1 bg-linear-to-b from-indigo-400 to-purple-400 shadow-[0_0_15px_rgba(99,102,241,0.8)] rounded-full"
                       animate={{ opacity: [1, 0.2, 1] }}
                       transition={{ duration: 0.8, repeat: Infinity }}
                     />
