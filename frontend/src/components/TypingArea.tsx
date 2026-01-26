@@ -59,7 +59,7 @@ export function TypingArea({
         initial={{ opacity: 0, scale: 0.95, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl glass rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl shadow-indigo-500/20"
+        className="w-full max-w-4xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-12 relative overflow-hidden shadow-2xl shadow-indigo-500/20"
       >
         {/* Background gradient accent */}
         <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-purple-500/5" />
@@ -92,7 +92,7 @@ export function TypingArea({
               onClick={onReset}
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.95 }}
-              className="absolute top-0 right-0 p-2 glass rounded-xl hover:bg-white/15 transition-all duration-200 shadow-lg"
+              className="absolute top-0 right-0 p-2 backdrop-blur-md bg-white/5 border border-white/10 rounded-xl hover:bg-white/15 transition-all duration-200 shadow-lg"
               title="Restart (ESC)"
             >
               <RotateCcw className="w-5 h-5 text-indigo-400" />
@@ -155,7 +155,7 @@ export function TypingArea({
                 transition={{ duration: 2, repeat: Infinity }}
                 className="inline-block"
               >
-                <div className="px-4 py-2 glass rounded-xl text-white/70 text-xs font-medium">
+                <div className="px-4 py-2 backdrop-blur-md bg-white/5 border border-white/10 rounded-xl text-white/70 text-xs font-medium">
                   Ready to type...
                 </div>
               </motion.div>

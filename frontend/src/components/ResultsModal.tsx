@@ -58,7 +58,7 @@ export function ResultsModal({
         initial={{ scale: 0.9, opacity: 0, y: 30 }} 
         animate={{ scale: 1, opacity: 1, y: 0 }} 
         transition={{ delay: 0.1, duration: 0.4, type: "spring" }} 
-        className="w-full max-w-2xl glass rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30"
+        className="w-full max-w-2xl backdrop-blur-xl bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30"
       >
         <div className="absolute inset-0 bg-linear-to-br from-indigo-500/10 via-transparent to-purple-500/10" />
 
@@ -70,7 +70,7 @@ export function ResultsModal({
                 initial={{ scale: 0, rotate: -180 }} 
                 animate={{ scale: 1, rotate: 0 }} 
                 transition={{ delay: 0.3, type: 'spring', stiffness: 200 }} 
-                className="inline-flex items-center gap-2 px-4 py-2 gradient-success text-white border border-emerald-500/50 rounded-full mb-4 shadow-lg shadow-emerald-500/30"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 text-white border border-emerald-500/50 rounded-full mb-4 shadow-lg shadow-emerald-500/30"
               >
                 <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity }}>
                   <Trophy className="w-5 h-5" />
@@ -82,7 +82,7 @@ export function ResultsModal({
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-4xl sm:text-5xl font-bold text-gradient mb-2"
+              className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-2"
             >
               Test Complete!
             </motion.h2>
@@ -110,7 +110,7 @@ export function ResultsModal({
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ delay: 0.2 + index * 0.1 }}
                   whileHover={{ y: -5, scale: 1.05 }}
-                  className={`glass rounded-2xl p-4 sm:p-6 text-center cursor-pointer bg-linear-to-br ${stat.color} shadow-lg transition-all duration-300`}
+                  className={`backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 text-center cursor-pointer bg-linear-to-br ${stat.color} shadow-lg transition-all duration-300`}
                 >
                   <div className="inline-flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/20 mb-2 sm:mb-3">
                     <Icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
@@ -130,7 +130,7 @@ export function ResultsModal({
               initial={{ opacity: 0, x: -20 }} 
               animate={{ opacity: 1, x: 0 }} 
               transition={{ delay: 0.5 }}
-              className="glass rounded-2xl p-4 mb-6 flex items-center justify-between hover:bg-white/15 transition-all duration-300"
+              className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-4 mb-6 flex items-center justify-between hover:bg-white/15 transition-all duration-300"
             >
               <div className="flex items-center gap-3">
                 <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
@@ -152,7 +152,7 @@ export function ResultsModal({
               initial={{ opacity: 0, x: 20 }} 
               animate={{ opacity: 1, x: 0 }} 
               transition={{ delay: 0.6 }}
-              className="glass bg-linear-to-r from-red-500/20 to-orange-500/20 border-red-500/30 rounded-2xl p-4 mb-6 text-center"
+              className="backdrop-blur-md bg-white/5 border border-white/10 bg-linear-to-r from-red-500/20 to-orange-500/20 border-red-500/30 rounded-2xl p-4 mb-6 text-center"
             >
               <span className="text-red-300 font-medium">
                 {errors} mistake{errors !== 1 ? 's' : ''} made
@@ -172,7 +172,7 @@ export function ResultsModal({
                 onClick={() => setShowHeatmap(!showHeatmap)}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full flex items-center justify-between px-4 py-3 glass rounded-2xl hover:bg-white/15 transition-all duration-300 shadow-lg"
+                className="w-full flex items-center justify-between px-4 py-3 backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl hover:bg-white/15 transition-all duration-300 shadow-lg"
               >
                 <div className="flex items-center gap-2">
                   <Keyboard className="w-5 h-5 text-indigo-400" />
@@ -213,7 +213,7 @@ export function ResultsModal({
               onClick={onRestart}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="flex-1 px-6 py-3 sm:py-4 gradient-primary text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/50 hover:shadow-indigo-500/70 transition-all duration-300"
+              className="flex-1 px-6 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/50 hover:shadow-indigo-500/70 transition-all duration-300"
             >
               Try Again
             </motion.button>
@@ -221,7 +221,7 @@ export function ResultsModal({
               onClick={() => setShowShare(true)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 sm:px-6 py-3 sm:py-4 glass text-white rounded-2xl font-bold hover:bg-white/15 transition-all duration-300 flex items-center gap-2 shadow-lg"
+              className="px-4 sm:px-6 py-3 sm:py-4 backdrop-blur-md bg-white/5 border border-white/10 text-white rounded-2xl font-bold hover:bg-white/15 transition-all duration-300 flex items-center gap-2 shadow-lg"
             >
               <Share2 className="w-5 h-5" />
               <span className="hidden sm:inline">Share</span>

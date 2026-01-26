@@ -12,7 +12,7 @@ export function Footer() {
     <motion.footer
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass border-t border-white/10 mt-auto shadow-2xl shadow-black/50"
+      className="backdrop-blur-xl bg-white/5 border-t border-white/10 mt-auto shadow-2xl shadow-black/50"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8">
@@ -39,7 +39,7 @@ export function Footer() {
                   transition={{ delay: idx * 0.1 }}
                   whileHover={{ scale: 1.3, y: -3 }}
                   whileTap={{ scale: 0.9 }}
-                  className="p-2 glass rounded-lg text-white/60 hover:text-white hover:bg-white/15 transition-all duration-300 shadow-lg"
+                  className="p-2 backdrop-blur-md bg-white/5 border border-white/10 rounded-lg text-white/60 hover:text-white hover:bg-white/15 transition-all duration-300 shadow-lg"
                   aria-label={link.label}
                 >
                   <Icon className="w-5 h-5" />

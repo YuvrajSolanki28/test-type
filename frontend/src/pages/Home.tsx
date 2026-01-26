@@ -86,7 +86,7 @@ export function Home() {
               <motion.button 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 glass rounded-xl hover:bg-white/15 transition-all duration-200 text-sm sm:text-base font-medium shadow-lg"
+                className="flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl hover:bg-white/15 transition-all duration-200 text-sm sm:text-base font-medium shadow-lg"
               >
                 <LogIn className="w-4 h-4" />
                 <span className="hidden sm:inline">Sign In</span>
@@ -109,7 +109,7 @@ export function Home() {
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-indigo-500/50"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/50"
             >
               <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </motion.div>
@@ -117,7 +117,7 @@ export function Home() {
 
           <motion.h1 
             variants={itemVariants}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 text-gradient animate-glow"
+            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
           >
             TypeSpeed
           </motion.h1>
@@ -137,7 +137,7 @@ export function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(99, 102, 241, 0.6)' }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-8 py-3 sm:py-4 gradient-primary text-white rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="w-full sm:w-auto px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 Start Typing Test
                 <ArrowRight className="w-5 h-5" />
@@ -148,7 +148,7 @@ export function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-8 py-3 sm:py-4 glass text-white rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="w-full sm:w-auto px-8 py-3 sm:py-4 backdrop-blur-xl bg-white/5 border border-white/10 text-white rounded-2xl font-bold text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 View Stats
               </motion.button>
@@ -170,7 +170,7 @@ export function Home() {
                 key={feature.title}
                 variants={itemVariants}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="card group cursor-pointer"
+                className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 group cursor-pointer"
               >
                 <motion.div 
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-linear-to-br ${feature.gradient} flex items-center justify-center mb-4 sm:mb-5 group-hover:scale-110 transition-transform duration-300`}

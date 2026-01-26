@@ -109,7 +109,7 @@ export function History() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-12 sm:mb-16"
         >
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 text-gradient animate-glow">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             Your Progress
           </h1>
           <p className="text-white/70 text-lg sm:text-xl">
@@ -128,7 +128,7 @@ export function History() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5, scale: 1.02 }}
-                className="card group cursor-pointer"
+                className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 group cursor-pointer"
               >
                 <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-linear-to-br ${stat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
                   <Icon className={`w-6 h-6 sm:w-7 sm:h-7 ${stat.iconColor}`} />
@@ -148,11 +148,11 @@ export function History() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="card mb-12 sm:mb-16"
+            className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6 mb-12 sm:mb-16"
           >
             <div className="flex items-center justify-between mb-6 sm:mb-8">
               <h2 className="text-2xl sm:text-3xl font-bold text-white">WPM Progress</h2>
-              <div className="px-3 py-1 glass rounded-lg text-xs sm:text-sm text-white/70">
+              <div className="px-3 py-1 backdrop-blur-md bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm text-white/70">
                 Last {wpmData.length} Tests
               </div>
             </div>
@@ -203,7 +203,7 @@ export function History() {
                         whileHover={{ opacity: 1, y: 0 }}
                         className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-all pointer-events-none z-20"
                       >
-                        <div className="glass rounded-xl px-3 py-2 shadow-xl whitespace-nowrap">
+                        <div className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-xl px-3 py-2 shadow-xl whitespace-nowrap">
                           <div className="text-sm font-bold text-white mb-1">{data.wpm} WPM</div>
                           <div className="text-xs text-white/60">{data.accuracy}% accuracy</div>
                           <div className="text-xs text-white/50 capitalize">{data.difficulty}</div>
@@ -227,7 +227,7 @@ export function History() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="card"
+          className="backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6"
         >
           <div className="flex items-center gap-3 mb-6 sm:mb-8">
             <Calendar className="w-6 h-6 sm:w-7 sm:h-7 text-indigo-400" />
@@ -254,7 +254,7 @@ export function History() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
                   whileHover={{ x: 4, scale: 1.01 }}
-                  className="glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-white/15 transition-all duration-300 cursor-pointer group"
+                  className="backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 hover:bg-white/15 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="flex flex-wrap items-center gap-3">
                     <div className="flex items-center gap-2 text-xs sm:text-sm text-white/60">
@@ -265,7 +265,7 @@ export function History() {
                         year: 'numeric'
                       })}
                     </div>
-                    <div className="px-3 py-1 glass rounded-lg text-xs sm:text-sm capitalize font-medium text-indigo-300">
+                    <div className="px-3 py-1 backdrop-blur-md bg-white/5 border border-white/10 rounded-lg text-xs sm:text-sm capitalize font-medium text-indigo-300">
                       {test.difficulty}
                     </div>
                   </div>
