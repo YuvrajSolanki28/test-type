@@ -17,7 +17,7 @@ export function Lessons() {
     <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 pb-16 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Typing Lessons
           </h1>
           <p className="text-lg text-white/60">Master typing with structured learning</p>

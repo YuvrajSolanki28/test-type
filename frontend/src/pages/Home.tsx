@@ -109,7 +109,7 @@ export function Home() {
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/50"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-linear-to-r from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/50"
             >
               <Sparkles className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </motion.div>
@@ -117,7 +117,7 @@ export function Home() {
 
           <motion.h1 
             variants={itemVariants}
-            className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 pb-16 bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
           >
             TypeSpeed
           </motion.h1>
@@ -137,7 +137,7 @@ export function Home() {
               <motion.button
                 whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(99, 102, 241, 0.6)' }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto px-8 py-3 sm:py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all duration-300"
+                className="w-full sm:w-auto px-8 py-3 sm:py-4 bg-linear-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-base sm:text-lg flex items-center justify-center gap-2 shadow-xl hover:shadow-2xl transition-all duration-300"
               >
                 Start Typing Test
                 <ArrowRight className="w-5 h-5" />

@@ -53,7 +53,7 @@ export function Settings() {
     <div className="min-h-screen bg-linear-to-br from-[#0a0a0f] via-[#0f0f1a] to-[#1a0f1f] text-white">
       <div className="max-w-4xl mx-auto px-6 py-24">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="text-5xl font-bold mb-4 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 pb-16 bg-linear-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Settings
           </h1>
           <p className="text-white/60 mb-12">Customize your typing experience</p>

@@ -40,7 +40,7 @@ export function Navigation() {
           <div className="flex items-center justify-between px-4 py-3">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-linear-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
                 <Keyboard className="w-4 h-4 text-white" />
               </div>
               <span className="font-bold text-white">TypeSpeed</span>
@@ -78,7 +78,7 @@ export function Navigation() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="fixed right-0 top-0 bottom-0 w-72 z-50 bg-gradient-to-b from-[#1a1a2e] to-[#0f0f1e] border-l border-white/10 p-6"
+              className="fixed right-0 top-0 bottom-0 w-72 z-50 bg-linear-to-b from-[#1a1a2e] to-[#0f0f1e] border-l border-white/10 p-6"
             >
               {/* Close Button */}
               <div className="flex justify-end mb-8">
@@ -112,7 +112,7 @@ export function Navigation() {
                           whileTap={{ scale: 0.98 }}
                           className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                             isActive 
-                              ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 text-white border-l-2 border-indigo-400' 
+                              ? 'bg-linear-to-r from-indigo-500/20 to-purple-500/20 text-white border-l-2 border-indigo-400' 
                               : 'text-white/60 hover:text-white hover:bg-white/5'
                           }`}
                         >
@@ -156,7 +156,7 @@ export function Navigation() {
                     {isActive && (
                       <motion.div
                         layoutId="activeNav"
-                        className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl"
+                        className="absolute inset-0 bg-linear-to-r from-indigo-500 to-purple-600 rounded-xl"
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                       />
                     )}
