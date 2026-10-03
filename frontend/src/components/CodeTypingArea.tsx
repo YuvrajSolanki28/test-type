@@ -27,9 +27,10 @@ interface CodeTypingAreaProps {
   progress: number;
   timeLimit: number | null;
   timeRemaining: number | null;
+  language?: string;
   onKeyPress: (key: string) => void;
   onReset: () => void;
-  inputRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function CodeTypingArea({

@@ -25,7 +25,6 @@ export function Profile() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<UserStats | null>(null)
-  const [history, setHistory] = useState<TestResult[]>([])
 
   // Redirect if not logged in
   useEffect(() => {
@@ -38,7 +37,6 @@ export function Profile() {
     async function loadStats() {
       try {
         const data = await getTestHistory()
-        setHistory(data || [])
         
         if (data && data.length > 0) {
           // Calculate comprehensive stats

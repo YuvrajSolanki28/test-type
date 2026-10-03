@@ -9,6 +9,20 @@ import { useTheme }  from '../hooks/useTheme'
 import { themes } from '../utils/themeManager'
 import type { ThemeId } from '../utils/themeManager'
 
+const toCssColor = (token: string) => (
+  token.startsWith('[') && token.endsWith(']')
+    ? token.slice(1, -1)
+    : `var(--color-${token})`
+)
+
+const toBackgroundGradient = (bgClasses: string) => {
+  const matches = [...bgClasses.matchAll(/\[(#[0-9a-fA-F]{3,8})\]/g)].map((match) => match[1])
+  if (matches.length >= 3) {
+    return `linear-gradient(135deg, ${matches[0]} 0%, ${matches[1]} 50%, ${matches[2]} 100%)`
+  }
+  return 'linear-gradient(135deg, #0a0a0f 0%, #0f0f1a 50%, #1a0f1f 100%)'
+}
+
 const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
   <button
     onClick={onChange}
@@ -169,7 +183,7 @@ export function Settings() {
                       ? 'border-blue-500 ring-2 ring-blue-500/30' 
                       : 'border-white/10 hover:border-white/30'
                   }`}
-                  style={{ background: theme.background }}
+                  style={{ background: toBackgroundGradient(theme.colors.bg) }}
                 >
                   {/* Active indicator */}
                   {isActive && (
@@ -184,36 +198,27 @@ export function Settings() {
                     <div className="flex gap-1.5 mb-3">
                       <div 
                         className="w-4 h-4 rounded-full" 
-                        style={{ backgroundColor: theme.primary }}
+                        style={{ backgroundColor: toCssColor(theme.colors.primary) }}
                       />
                       <div 
                         className="w-4 h-4 rounded-full" 
-                        style={{ backgroundColor: theme.accent }}
+                        style={{ backgroundColor: toCssColor(theme.colors.accent) }}
                       />
                       <div 
                         className="w-4 h-4 rounded-full" 
-                        style={{ backgroundColor: theme.correct }}
+                        style={{ backgroundColor: toCssColor(theme.colors.success) }}
                       />
                     </div>
                     
                     {/* Sample text preview */}
-                    <div 
-                      className="text-xs font-mono p-2 rounded"
-                      style={{ 
-                        backgroundColor: theme.background,
-                        color: theme.text 
-                      }}
-                    >
-                      <span style={{ color: theme.correct }}>the </span>
-                      <span style={{ color: theme.error }}>q</span>
-                      <span style={{ color: theme.textMuted }}>uick fox</span>
+                    <div className={`text-xs font-mono p-2 rounded ${theme.colors.card} ${theme.colors.text}`}>
+                      <span className={theme.colors.success}>the </span>
+                      <span className={theme.colors.error}>q</span>
+                      <span className={theme.colors.textMuted}>uick fox</span>
                     </div>
                     
                     {/* Theme name */}
-                    <div 
-                      className="text-sm font-medium capitalize mt-2"
-                      style={{ color: theme.text }}
-                    >
+                    <div className={`text-sm font-medium capitalize mt-2 ${theme.colors.text}`}>
                       {theme.name}
                     </div>
                   </div>
