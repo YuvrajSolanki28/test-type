@@ -16,7 +16,7 @@ import 'prismjs/components/prism-python';
 
 
 if (typeof window !== 'undefined') {
-  (window as any).Prism = Prism;
+  (window as Window & { Prism?: typeof Prism }).Prism = Prism;
 }
 
 interface CodeTypingAreaProps {
@@ -27,9 +27,10 @@ interface CodeTypingAreaProps {
   progress: number;
   timeLimit: number | null;
   timeRemaining: number | null;
+  language?: string;
   onKeyPress: (key: string) => void;
   onReset: () => void;
-  inputRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function CodeTypingArea({
@@ -83,7 +84,7 @@ export function CodeTypingArea({
 
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+  }, [inputRef]);
 
   useEffect(() => {
     Prism.highlightAll();

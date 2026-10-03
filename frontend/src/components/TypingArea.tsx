@@ -13,7 +13,7 @@ interface TypingAreaProps {
   timeRemaining: number | null;
   onKeyPress: (key: string) => void;
   onReset: () => void;
-  inputRef: React.RefObject<HTMLDivElement>;
+  inputRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export function TypingArea({
